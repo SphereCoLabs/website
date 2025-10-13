@@ -137,10 +137,10 @@ export default function WorkflowStepCard({
                 {step.title}
               </h3>
               <p className="text-sm text-gray-600">
-                {step.actor === "ai" && "🤖 AI-Powered"}
-                {step.actor === "organizer" && "👤 Organizer"}
-                {step.actor === "kol" && "⭐ KOL"}
-                {step.actor === "system" && "⚙️ System"}
+                {step.actor === "ai" && "AI-Powered"}
+                {step.actor === "organizer" && "Organizer"}
+                {step.actor === "kol" && "KOL"}
+                {step.actor === "system" && "System"}
               </p>
             </div>
           </div>

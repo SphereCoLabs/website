@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { Home, Plus, BarChart3, Settings, Bell, User } from "lucide-react";
 
 export default function Navigation() {
@@ -16,9 +17,16 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
+              <span>
+                <Image
+                  src="/favicon.svg"
+                  alt="SphereCo Logo"
+                  width={32}
+                  height={32}
+                />
+              </span>
             </div>
-            <span className="text-xl font-bold text-blue-600">SphereCo</span>
+            <span className="text-xl font-bold">SphereCo</span>
           </Link>
 
           {/* Navigation Links */}
@@ -67,7 +75,7 @@ export default function Navigation() {
                 <p className="text-sm font-medium text-gray-900">
                   John Organizer
                 </p>
-                <p className="text-xs text-gray-500">Verified ✅</p>
+                <p className="text-xs text-gray-500">0x1234...abcd</p>
               </div>
             </div>
           </div>

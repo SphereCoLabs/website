@@ -12,6 +12,14 @@ import {
   DollarSign,
   Calendar,
   Globe,
+  FileText,
+  Users,
+  CheckCircle2,
+  Lightbulb,
+  Hash,
+  AtSign,
+  Palette,
+  TrendingUp,
 } from "lucide-react";
 import Web3Verification from "./Web3Verification";
 
@@ -58,11 +66,11 @@ export default function CampaignCreator() {
 
   const steps = [
     { title: "Web3 Verification", icon: Sparkles },
-    { title: "Campaign Basics", icon: Target },
-    { title: "Budget & Timeline", icon: DollarSign },
+    { title: "Campaign Basics", icon: FileText },
+    { title: "Budget & Timeline", icon: Calendar },
     { title: "Platform & Content", icon: Globe },
-    { title: "Guidelines", icon: Eye },
-    { title: "Review & Publish", icon: ArrowRight },
+    { title: "Guidelines", icon: CheckCircle2 },
+    { title: "Review & Publish", icon: Eye },
   ];
 
   const handleConnect = async () => {
@@ -129,41 +137,44 @@ export default function CampaignCreator() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <FileText className="w-4 h-4 text-blue-600" />
                 Campaign Title
               </label>
               <input
                 type="text"
                 value={form.title}
                 onChange={(e) => handleFormChange("title", e.target.value)}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none"
-                placeholder="Summer Fashion Collection Campaign"
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
+                placeholder="e.g., Summer Fashion Collection Campaign"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <TrendingUp className="w-4 h-4 text-blue-600" />
                 Campaign Brief
               </label>
               <textarea
                 value={form.brief}
                 onChange={(e) => handleFormChange("brief", e.target.value)}
                 rows={4}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none resize-none"
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none resize-none transition-all"
                 placeholder="Describe your campaign objectives, target audience, and key messages..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <Target className="w-4 h-4 text-blue-600" />
                 Campaign Goal
               </label>
               <input
                 type="text"
                 value={form.goal}
                 onChange={(e) => handleFormChange("goal", e.target.value)}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none"
-                placeholder="Increase brand awareness, drive sales, launch new product..."
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
+                placeholder="e.g., Increase brand awareness, drive sales, launch new product..."
               />
             </div>
           </div>
@@ -173,23 +184,31 @@ export default function CampaignCreator() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <DollarSign className="w-4 h-4 text-green-600" />
                 Total Budget (USD)
               </label>
-              <input
-                type="number"
-                value={form.budget}
-                onChange={(e) =>
-                  handleFormChange("budget", Number(e.target.value))
-                }
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none"
-                placeholder="5000"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">
+                  $
+                </span>
+                <input
+                  type="number"
+                  value={form.budget}
+                  onChange={(e) =>
+                    handleFormChange("budget", Number(e.target.value))
+                  }
+                  className="w-full pl-8 pr-3 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
+                  placeholder="5000"
+                  min="0"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Calendar className="w-4 h-4 text-blue-600" />
                   Start Date
                 </label>
                 <input
@@ -201,11 +220,12 @@ export default function CampaignCreator() {
                       start: e.target.value,
                     })
                   }
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Calendar className="w-4 h-4 text-blue-600" />
                   End Date
                 </label>
                 <input
@@ -217,7 +237,7 @@ export default function CampaignCreator() {
                       end: e.target.value,
                     })
                   }
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
                 />
               </div>
             </div>
@@ -228,7 +248,8 @@ export default function CampaignCreator() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-3">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-3">
+                <Globe className="w-4 h-4 text-blue-600" />
                 Target Platforms
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -238,8 +259,8 @@ export default function CampaignCreator() {
                     onClick={() => handleArrayToggle("platforms", platform)}
                     className={`p-3 rounded-lg border text-sm font-medium transition-all ${
                       form.platforms.includes(platform)
-                        ? "bg-gradient-primary border-purple-500 text-white"
-                        : "bg-white/10 border-white/20 text-gray-300 hover:border-white/40"
+                        ? "bg-blue-50 border-blue-500 text-blue-700 shadow-sm"
+                        : "bg-white border-gray-300 text-gray-700 hover:border-blue-400 hover:bg-blue-50/50"
                     }`}
                   >
                     {platform}
@@ -249,7 +270,8 @@ export default function CampaignCreator() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-3">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-3">
+                <FileText className="w-4 h-4 text-blue-600" />
                 Content Types
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -259,8 +281,8 @@ export default function CampaignCreator() {
                     onClick={() => handleArrayToggle("contentType", type)}
                     className={`p-3 rounded-lg border text-sm font-medium transition-all ${
                       form.contentType.includes(type)
-                        ? "bg-gradient-primary border-purple-500 text-white"
-                        : "bg-white/10 border-white/20 text-gray-300 hover:border-white/40"
+                        ? "bg-blue-50 border-blue-500 text-blue-700 shadow-sm"
+                        : "bg-white border-gray-300 text-gray-700 hover:border-blue-400 hover:bg-blue-50/50"
                     }`}
                   >
                     {type}
@@ -270,7 +292,8 @@ export default function CampaignCreator() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <Users className="w-4 h-4 text-blue-600" />
                 Target Audience
               </label>
               <textarea
@@ -279,8 +302,8 @@ export default function CampaignCreator() {
                   handleFormChange("targetAudience", e.target.value)
                 }
                 rows={3}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none resize-none"
-                placeholder="Age range, interests, demographics, location..."
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none resize-none transition-all"
+                placeholder="e.g., Age 18-35, fashion enthusiasts, urban lifestyle, US & Europe..."
               />
             </div>
           </div>
@@ -290,28 +313,48 @@ export default function CampaignCreator() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-600" />
                 Campaign Guidelines
               </label>
               <textarea
                 value={form.guidelines}
                 onChange={(e) => handleFormChange("guidelines", e.target.value)}
                 rows={6}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none resize-none"
-                placeholder="Brand guidelines, dos and don'ts, content requirements, hashtags, mentions..."
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none resize-none transition-all"
+                placeholder="Enter brand guidelines, dos and don'ts, content requirements, hashtags, mentions..."
               />
             </div>
 
-            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg p-4 border border-purple-500/20">
-              <h4 className="font-medium text-purple-300 mb-2">
-                💡 AI Suggestions
-              </h4>
-              <ul className="text-sm text-gray-300 space-y-1">
-                <li>• Include brand hashtag #YourBrand in all posts</li>
-                <li>• Tag official account @yourbrand</li>
-                <li>• Use consistent brand color palette</li>
-                <li>• Include clear call-to-action</li>
-              </ul>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Lightbulb className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-blue-900 mb-3">
+                    AI Suggestions
+                  </h4>
+                  <ul className="text-sm text-gray-700 space-y-2">
+                    <li className="flex items-start gap-2">
+                      <Hash className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <span>Include brand hashtag #YourBrand in all posts</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <AtSign className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <span>Tag official account @yourbrand</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Palette className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <span>Use consistent brand color palette</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Target className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <span>Include clear call-to-action</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -319,28 +362,42 @@ export default function CampaignCreator() {
       case 5:
         return (
           <div className="space-y-6">
-            <div className="bg-gradient-card rounded-lg p-6 border border-white/10">
-              <h3 className="text-xl font-bold text-white mb-4">
-                Campaign Summary
-              </h3>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Eye className="w-5 h-5 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  Campaign Summary
+                </h3>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-gray-400">Title:</span>
-                    <p className="font-medium text-white">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="flex items-center gap-2 text-gray-600 mb-1">
+                      <FileText className="w-4 h-4" />
+                      <span className="font-medium">Title</span>
+                    </div>
+                    <p className="font-semibold text-gray-900 ml-6">
                       {form.title || "Untitled Campaign"}
                     </p>
                   </div>
-                  <div>
-                    <span className="text-gray-400">Budget:</span>
-                    <p className="font-medium text-green-400">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="flex items-center gap-2 text-gray-600 mb-1">
+                      <DollarSign className="w-4 h-4" />
+                      <span className="font-medium">Budget</span>
+                    </div>
+                    <p className="font-semibold text-green-600 ml-6">
                       ${form.budget.toLocaleString()}
                     </p>
                   </div>
-                  <div>
-                    <span className="text-gray-400">Duration:</span>
-                    <p className="font-medium text-white">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="flex items-center gap-2 text-gray-600 mb-1">
+                      <Calendar className="w-4 h-4" />
+                      <span className="font-medium">Duration</span>
+                    </div>
+                    <p className="font-semibold text-gray-900 ml-6">
                       {form.timeline.start && form.timeline.end
                         ? `${form.timeline.start} - ${form.timeline.end}`
                         : "Not set"}
@@ -348,26 +405,35 @@ export default function CampaignCreator() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-gray-400">Platforms:</span>
-                    <p className="font-medium text-purple-300">
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="flex items-center gap-2 text-gray-600 mb-1">
+                      <Globe className="w-4 h-4" />
+                      <span className="font-medium">Platforms</span>
+                    </div>
+                    <p className="font-semibold text-blue-600 ml-6">
                       {form.platforms.length > 0
                         ? form.platforms.join(", ")
                         : "None selected"}
                     </p>
                   </div>
-                  <div>
-                    <span className="text-gray-400">Content Types:</span>
-                    <p className="font-medium text-purple-300">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="flex items-center gap-2 text-gray-600 mb-1">
+                      <TrendingUp className="w-4 h-4" />
+                      <span className="font-medium">Content Types</span>
+                    </div>
+                    <p className="font-semibold text-blue-600 ml-6">
                       {form.contentType.length > 0
                         ? form.contentType.join(", ")
                         : "None selected"}
                     </p>
                   </div>
-                  <div>
-                    <span className="text-gray-400">Status:</span>
-                    <p className="font-medium text-yellow-400">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="flex items-center gap-2 text-gray-600 mb-1">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span className="font-medium">Status</span>
+                    </div>
+                    <p className="font-semibold text-emerald-600 ml-6">
                       Ready to Publish
                     </p>
                   </div>
@@ -378,7 +444,7 @@ export default function CampaignCreator() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 onClick={() => console.log("Save as draft")}
-                className="py-3 px-6 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                className="py-3 px-6 bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-700 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow"
               >
                 <Save className="w-5 h-5" />
                 <span>Save as Draft</span>
@@ -386,10 +452,10 @@ export default function CampaignCreator() {
 
               <button
                 onClick={() => console.log("Publish campaign")}
-                className="py-3 px-6 bg-gradient-primary hover:opacity-90 text-white rounded-lg font-medium transition-opacity flex items-center justify-center space-x-2"
+                className="py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
-                <ArrowRight className="w-5 h-5" />
                 <span>Publish Campaign</span>
+                <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -423,31 +489,37 @@ export default function CampaignCreator() {
           {steps.map((step, index) => (
             <div
               key={step.title}
-              className={`flex items-center space-x-2 ${
-                index <= currentStep ? "text-purple-400" : "text-gray-500"
-              }`}
+              className="flex flex-col items-center gap-2 flex-1"
             >
               <div
-                className={`p-2 rounded-lg ${
+                className={`p-3 rounded-full transition-all duration-300 ${
                   index < currentStep
-                    ? "bg-gradient-primary"
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg"
                     : index === currentStep
-                    ? "bg-purple-500/20 border border-purple-500"
-                    : "bg-gray-700"
+                    ? "bg-blue-500 shadow-lg ring-4 ring-blue-100"
+                    : "bg-gray-200"
                 }`}
               >
-                <step.icon className="w-4 h-4 text-white" />
+                <step.icon
+                  className={`w-5 h-5 ${
+                    index <= currentStep ? "text-white" : "text-gray-400"
+                  }`}
+                />
               </div>
-              <span className="text-sm font-medium hidden md:block">
+              <span
+                className={`text-xs font-medium text-center hidden md:block ${
+                  index <= currentStep ? "text-blue-600" : "text-gray-400"
+                }`}
+              >
                 {step.title}
               </span>
             </div>
           ))}
         </div>
 
-        <div className="h-2 bg-gray-200 rounded-full">
+        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-blue-600 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-500 shadow-sm"
             style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
           />
         </div>
@@ -469,7 +541,7 @@ export default function CampaignCreator() {
         <div className="flex justify-between">
           <button
             onClick={handlePrevious}
-            className="py-3 px-6 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-lg font-medium transition-colors flex items-center space-x-2"
+            className="py-3 px-6 bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-700 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm hover:shadow"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Previous</span>
@@ -478,9 +550,9 @@ export default function CampaignCreator() {
           {currentStep < steps.length - 1 && (
             <button
               onClick={handleNext}
-              className="py-3 px-6 bg-gradient-primary hover:opacity-90 text-white rounded-lg font-medium transition-opacity flex items-center space-x-2"
+              className="py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all flex items-center gap-2 shadow-md hover:shadow-lg"
             >
-              <span>Next</span>
+              <span>Next Step</span>
               <ArrowRight className="w-5 h-5" />
             </button>
           )}

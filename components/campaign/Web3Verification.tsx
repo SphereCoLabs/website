@@ -31,37 +31,37 @@ export default function Web3Verification({
     switch (verificationStatus) {
       case "connecting":
         return {
-          color: "text-blue-400",
-          bgColor: "bg-blue-500/10",
-          borderColor: "border-blue-500/30",
+          color: "text-blue-700",
+          bgColor: "bg-blue-50",
+          borderColor: "border-blue-300",
           message: "Connecting to wallet...",
         };
       case "signing":
         return {
-          color: "text-yellow-400",
-          bgColor: "bg-yellow-500/10",
-          borderColor: "border-yellow-500/30",
+          color: "text-amber-700",
+          bgColor: "bg-amber-50",
+          borderColor: "border-amber-300",
           message: "Please sign the transaction in your wallet",
         };
       case "verified":
         return {
-          color: "text-green-400",
-          bgColor: "bg-green-500/10",
-          borderColor: "border-green-500/30",
-          message: "Verified Organizer ✅",
+          color: "text-emerald-700",
+          bgColor: "bg-emerald-50",
+          borderColor: "border-emerald-300",
+          message: "Verified Organizer",
         };
       case "error":
         return {
-          color: "text-red-400",
-          bgColor: "bg-red-500/10",
-          borderColor: "border-red-500/30",
+          color: "text-red-700",
+          bgColor: "bg-red-50",
+          borderColor: "border-red-300",
           message: "Verification failed. Please try again.",
         };
       default:
         return {
-          color: "text-gray-400",
-          bgColor: "bg-gray-500/10",
-          borderColor: "border-gray-500/20",
+          color: "text-gray-700",
+          bgColor: "bg-gray-50",
+          borderColor: "border-gray-300",
           message: "Connect wallet to verify identity",
         };
     }
@@ -73,25 +73,27 @@ export default function Web3Verification({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`${config.bgColor} ${config.borderColor} border backdrop-blur-sm rounded-xl p-6 mb-6`}
+      className={`${config.bgColor} ${config.borderColor} border-2 rounded-xl p-6 mb-6 shadow-sm`}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div
-            className={`p-3 rounded-lg ${config.bgColor} ${config.borderColor} border`}
+            className={`p-3 rounded-lg ${config.bgColor} ${config.borderColor} border-2 shadow-sm`}
           >
             <Shield className={`w-6 h-6 ${config.color}`} />
           </div>
           <div>
-            <h3 className="font-semibold text-white">
+            <h3 className="font-semibold text-gray-900">
               Web3 Identity Verification
             </h3>
-            <p className={`text-sm ${config.color}`}>{config.message}</p>
+            <p className={`text-sm font-medium ${config.color}`}>
+              {config.message}
+            </p>
           </div>
         </div>
 
         {verificationStatus === "verified" && (
-          <CheckCircle className="w-8 h-8 text-green-400" />
+          <CheckCircle className="w-8 h-8 text-emerald-600" />
         )}
       </div>
 
@@ -99,7 +101,7 @@ export default function Web3Verification({
         <button
           onClick={onConnect}
           disabled={verificationStatus === "connecting"}
-          className="w-full py-3 px-4 bg-gradient-primary hover:opacity-90 disabled:opacity-50 text-white rounded-lg font-medium transition-opacity flex items-center justify-center space-x-2"
+          className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
         >
           <Wallet className="w-5 h-5" />
           <span>
@@ -110,11 +112,13 @@ export default function Web3Verification({
         </button>
       ) : (
         <div className="space-y-4">
-          <div className="bg-white/5 rounded-lg p-4">
+          <div className="bg-white rounded-lg p-4 border border-gray-300 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Connected Address:</p>
-                <p className="font-mono text-purple-300 text-sm">
+                <p className="text-sm font-medium text-gray-600">
+                  Connected Address:
+                </p>
+                <p className="font-mono text-blue-700 text-sm font-semibold mt-1">
                   {address
                     ? `${address.slice(0, 6)}...${address.slice(-4)}`
                     : "Loading..."}
@@ -122,9 +126,10 @@ export default function Web3Verification({
               </div>
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="text-purple-400 hover:text-purple-300 transition-colors"
+                className="text-blue-600 hover:text-blue-700 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+                title="View Details"
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -133,7 +138,7 @@ export default function Web3Verification({
             <button
               onClick={onSign}
               disabled={verificationStatus === "signing"}
-              className="w-full py-3 px-4 bg-gradient-success hover:opacity-90 disabled:opacity-50 text-white rounded-lg font-medium transition-opacity"
+              className="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all shadow-md hover:shadow-lg"
             >
               {verificationStatus === "signing"
                 ? "Signing..."
@@ -145,29 +150,37 @@ export default function Web3Verification({
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg p-4 border border-purple-500/20"
+              className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200"
             >
-              <h4 className="font-medium text-purple-300 mb-2">
-                Transaction Details:
+              <h4 className="font-semibold text-blue-900 mb-3">
+                Transaction Details
               </h4>
-              <div className="space-y-2 text-sm text-gray-300">
-                <div className="flex justify-between">
-                  <span>Network:</span>
-                  <span className="text-purple-300">Ethereum Mainnet</span>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                  <span className="text-gray-600 font-medium">Network:</span>
+                  <span className="text-blue-700 font-semibold">
+                    Ethereum Mainnet
+                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Contract:</span>
-                  <span className="font-mono text-purple-300">
+                <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                  <span className="text-gray-600 font-medium">Contract:</span>
+                  <span className="font-mono text-blue-700 font-semibold">
                     0x742d...5c7a
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Function:</span>
-                  <span className="text-purple-300">verifyOrganizer</span>
+                <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                  <span className="text-gray-600 font-medium">Function:</span>
+                  <span className="text-blue-700 font-semibold">
+                    verifyOrganizer
+                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Gas Estimate:</span>
-                  <span className="text-green-400">~0.003 ETH</span>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-gray-600 font-medium">
+                    Gas Estimate:
+                  </span>
+                  <span className="text-emerald-700 font-semibold">
+                    ~0.003 ETH
+                  </span>
                 </div>
               </div>
             </motion.div>
@@ -176,10 +189,10 @@ export default function Web3Verification({
       )}
 
       {verificationStatus === "error" && (
-        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-          <div className="flex items-center space-x-2">
-            <AlertCircle className="w-5 h-5 text-red-400" />
-            <p className="text-red-300 text-sm">
+        <div className="mt-4 p-4 bg-red-50 border-2 border-red-300 rounded-lg">
+          <div className="flex items-center space-x-3">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <p className="text-red-700 text-sm font-medium">
               Transaction failed. Please check your wallet and try again.
             </p>
           </div>
