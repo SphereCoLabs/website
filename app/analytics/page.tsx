@@ -17,7 +17,6 @@ export default function Analytics() {
             Comprehensive campaign analytics coming soon
           </p>
           <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
-            <div className="text-6xl mb-4">📊</div>
             <p className="text-gray-700">
               Advanced analytics with AI-powered insights will be available here
             </p>

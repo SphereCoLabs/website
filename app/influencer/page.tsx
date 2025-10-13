@@ -29,7 +29,6 @@ export default function KOLDashboard() {
       brand: "FashionCo",
       payment: "$2,500",
       deadline: "2025-11-15",
-      progress: 65,
       status: "In Progress",
     },
     {
@@ -38,7 +37,6 @@ export default function KOLDashboard() {
       brand: "TechGear",
       payment: "$1,800",
       deadline: "2025-10-30",
-      progress: 30,
       status: "In Progress",
     },
     {
@@ -47,7 +45,6 @@ export default function KOLDashboard() {
       brand: "FitLife",
       payment: "$3,200",
       deadline: "2025-12-01",
-      progress: 15,
       status: "Just Started",
     },
   ];
@@ -191,20 +188,6 @@ export default function KOLDashboard() {
                     <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
                       {campaign.status}
                     </span>
-                  </div>
-                  <div className="mb-3">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-600">Progress</span>
-                      <span className="font-semibold">
-                        {campaign.progress}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full"
-                        style={{ width: `${campaign.progress}%` }}
-                      ></div>
-                    </div>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">

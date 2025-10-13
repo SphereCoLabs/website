@@ -30,7 +30,6 @@ export default function OrganizerDashboard() {
       status: "active",
       kols: 5,
       budget: "$50,000",
-      progress: 65,
       deadline: "2025-11-15",
       engagement: "125K",
     },
@@ -40,7 +39,6 @@ export default function OrganizerDashboard() {
       status: "active",
       kols: 3,
       budget: "$30,000",
-      progress: 45,
       deadline: "2025-10-30",
       engagement: "85K",
     },
@@ -50,7 +48,6 @@ export default function OrganizerDashboard() {
       status: "active",
       kols: 8,
       budget: "$25,000",
-      progress: 80,
       deadline: "2025-12-01",
       engagement: "200K",
     },
@@ -60,7 +57,6 @@ export default function OrganizerDashboard() {
       status: "pending",
       kols: 0,
       budget: "$40,000",
-      progress: 0,
       deadline: "2025-11-20",
       engagement: "0",
     },
@@ -70,7 +66,6 @@ export default function OrganizerDashboard() {
       status: "completed",
       kols: 6,
       budget: "$35,000",
-      progress: 100,
       deadline: "2025-10-05",
       engagement: "180K",
     },
@@ -273,22 +268,6 @@ export default function OrganizerDashboard() {
                       </div>
                       <div className="text-xs text-gray-500">Deadline</div>
                     </div>
-                  </div>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="mb-4">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-gray-600">Progress</span>
-                    <span className="font-semibold text-gray-900">
-                      {campaign.progress}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full transition-all"
-                      style={{ width: `${campaign.progress}%` }}
-                    ></div>
                   </div>
                 </div>
 
