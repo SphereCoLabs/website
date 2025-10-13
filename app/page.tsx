@@ -1,101 +1,106 @@
-import Image from "next/image";
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight, Users, TrendingUp, Globe } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500">
+      <div className="max-w-7xl mx-auto px-6 py-20">
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-6xl font-bold text-white mb-6">
+            Welcome to SphereCo
+          </h1>
+          <p className="text-2xl text-white/90 mb-12">
+            AI-Powered Influencer Marketing Platform
+          </p>
+        </motion.div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* Role Selection Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <Link
+              href="/organizer"
+              className="block bg-white rounded-3xl p-8 hover:shadow-2xl transition-all hover:-translate-y-2 group"
+            >
+              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors">
+                <Users className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                Organizer
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Create and manage influencer marketing campaigns with AI-powered
+                insights
+              </p>
+              <div className="flex items-center text-blue-600 font-semibold group-hover:gap-3 transition-all">
+                <span>Get Started</span>
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </div>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            Read our docs
-          </a>
+            <Link
+              href="/browse"
+              className="block bg-white rounded-3xl p-8 hover:shadow-2xl transition-all hover:-translate-y-2 group"
+            >
+              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-600 transition-colors">
+                <Globe className="w-8 h-8 text-purple-600 group-hover:text-white transition-colors" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                Browse Campaigns
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Discover and apply to active campaigns from brands worldwide
+              </p>
+              <div className="flex items-center text-purple-600 font-semibold group-hover:gap-3 transition-all">
+                <span>Explore Now</span>
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </div>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Link
+              href="/influencer"
+              className="block bg-white rounded-3xl p-8 hover:shadow-2xl transition-all hover:-translate-y-2 group"
+            >
+              <div className="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-pink-600 transition-colors">
+                <TrendingUp className="w-8 h-8 text-pink-600 group-hover:text-white transition-colors" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                Influencer
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Track your campaigns, earnings, and performance metrics
+              </p>
+              <div className="flex items-center text-pink-600 font-semibold group-hover:gap-3 transition-all">
+                <span>View Dashboard</span>
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </div>
+            </Link>
+          </motion.div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }
