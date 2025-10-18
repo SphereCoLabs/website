@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Users, TrendingUp, Globe } from "lucide-react";
+import { ArrowRight, Users, TrendingUp, Globe, BookOpen } from "lucide-react";
 
 export default function Home() {
   return (
@@ -100,6 +100,36 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
+
+        {/* Documentation Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-12 max-w-md mx-auto"
+        >
+          <a
+            href="https://sphereco.gitbook.io/sphereco-docs/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block bg-white rounded-3xl p-8 hover:shadow-2xl transition-all hover:-translate-y-2 group"
+          >
+            <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-green-600 transition-colors">
+              <BookOpen className="w-8 h-8 text-green-600 group-hover:text-white transition-colors" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Documentation
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Learn how to use SphereCo platform with our comprehensive guides
+              and tutorials
+            </p>
+            <div className="flex items-center text-green-600 font-semibold group-hover:gap-3 transition-all">
+              <span>Read Docs</span>
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </div>
+          </a>
+        </motion.div>
       </div>
     </div>
   );

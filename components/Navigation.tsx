@@ -3,9 +3,11 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Home, Plus, BarChart3, Settings, Bell, User } from "lucide-react";
 
 export default function Navigation() {
+  const pathname = usePathname();
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
@@ -30,10 +32,14 @@ export default function Navigation() {
           </Link>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-2">
             <Link
               href="/organizer"
-              className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors"
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                pathname.startsWith("/organizer")
+                  ? "bg-blue-100 text-blue-600 font-medium"
+                  : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+              }`}
             >
               <Home className="w-4 h-4" />
               <span>Organizer</span>
@@ -41,7 +47,11 @@ export default function Navigation() {
 
             <Link
               href="/browse"
-              className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors"
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                pathname.startsWith("/browse")
+                  ? "bg-blue-100 text-blue-600 font-medium"
+                  : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+              }`}
             >
               <BarChart3 className="w-4 h-4" />
               <span>Browse Campaigns</span>
@@ -49,7 +59,11 @@ export default function Navigation() {
 
             <Link
               href="/influencer"
-              className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors"
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                pathname.startsWith("/influencer")
+                  ? "bg-blue-100 text-blue-600 font-medium"
+                  : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+              }`}
             >
               <User className="w-4 h-4" />
               <span>Influencer</span>
