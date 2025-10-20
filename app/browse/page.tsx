@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Search, Filter, Calendar, TrendingUp, Users } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function CampaignsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -149,12 +150,18 @@ export default function CampaignsPage() {
 
                 {/* Actions */}
                 <div className="flex gap-3">
-                  <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                  <Link
+                    href={`/browse/${campaign.id}`}
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center font-medium"
+                  >
                     Apply Now
-                  </button>
-                  <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                  </Link>
+                  <Link
+                    href={`/browse/${campaign.id}`}
+                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  >
                     Details
-                  </button>
+                  </Link>
                 </div>
               </div>
             </motion.div>
