@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
+import { Web3ConnectButton } from "./Web3ConnectButton";
 import {
   Home,
   Plus,
@@ -228,6 +229,9 @@ export default function Navigation() {
 
           {/* Right Side */}
           <div className="flex items-center space-x-4">
+            {/* Web3 Connect Button */}
+            <Web3ConnectButton />
+
             <button className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors relative">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>

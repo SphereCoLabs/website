@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
+import { Web3Provider } from "@/providers/Web3Provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,11 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${poppins.variable} font-sans antialiased`}
-      >
-        <Navigation />
-        {children}
+      <body className={`${poppins.variable} font-sans antialiased`}>
+        <Web3Provider>
+          <Navigation />
+          {children}
+        </Web3Provider>
       </body>
     </html>
   );
