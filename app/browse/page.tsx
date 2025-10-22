@@ -5,7 +5,7 @@ import { Search, Filter, Calendar, TrendingUp, Users } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
-export default function CampaignsPage() {
+export default function BrowseCampaignsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mock data untuk global campaigns
@@ -65,7 +65,7 @@ export default function CampaignsPage() {
             All Campaigns
           </h1>
           <p className="text-gray-600">
-            Browse and apply to active influencer marketing campaigns
+            Browse and explore active influencer marketing campaigns
           </p>
         </motion.div>
 
@@ -154,13 +154,7 @@ export default function CampaignsPage() {
                     href={`/browse/${campaign.id}`}
                     className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center font-medium"
                   >
-                    Apply Now
-                  </Link>
-                  <Link
-                    href={`/browse/${campaign.id}`}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                  >
-                    Details
+                    View Details
                   </Link>
                 </div>
               </div>

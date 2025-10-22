@@ -55,15 +55,14 @@ export default function Navigation() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Hide navigation on home page
-  if (pathname === "/") {
+  // Hide navigation on home page and login page
+  if (pathname === "/" || pathname === "/login") {
     return null;
   }
 
   // Determine user role based on current path
   const isOrganizer = pathname.startsWith("/organizer");
   const isInfluencer = pathname.startsWith("/influencer");
-  const isBrowse = pathname.startsWith("/browse");
 
   // Get role-specific styling
   const getRoleStyle = () => {
@@ -91,16 +90,16 @@ export default function Navigation() {
         userName: "Content Creator",
       };
     }
-    // Default (Browse)
+    // Default - should not reach here normally
     return {
-      gradient: "from-purple-500 to-purple-600",
-      bgColor: "bg-purple-600",
-      textColor: "text-purple-600",
-      hoverBg: "hover:bg-purple-50",
-      activeBg: "bg-purple-100",
-      badge: "bg-purple-500",
-      roleName: "Explorer",
-      userName: "Guest",
+      gradient: "from-gray-500 to-gray-600",
+      bgColor: "bg-gray-600",
+      textColor: "text-gray-600",
+      hoverBg: "hover:bg-gray-50",
+      activeBg: "bg-gray-100",
+      badge: "bg-gray-500",
+      roleName: "User",
+      userName: "User",
     };
   };
 
@@ -128,8 +127,8 @@ export default function Navigation() {
       animate={{ opacity: 1, y: 0 }}
       className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-[1400px] mx-auto px-4 lg:px-6">
+        <div className="flex items-center justify-between h-16 gap-8">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <div
@@ -155,12 +154,12 @@ export default function Navigation() {
           </Link>
 
           {/* Navigation Links - Different for each role */}
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-3xl">
             {isOrganizer && (
               <>
                 <Link
                   href="/organizer"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
                     pathname === "/organizer"
                       ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
                       : `text-gray-600 ${roleStyle.hoverBg}`
@@ -172,7 +171,7 @@ export default function Navigation() {
 
                 <Link
                   href="/organizer/create"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
                     pathname === "/organizer/create"
                       ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
                       : `text-gray-600 ${roleStyle.hoverBg}`
@@ -183,15 +182,27 @@ export default function Navigation() {
                 </Link>
 
                 <Link
-                  href="/analytics"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
-                    pathname === "/analytics"
+                  href="/organizer/analytics"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
+                    pathname === "/organizer/analytics"
                       ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
                       : `text-gray-600 ${roleStyle.hoverBg}`
                   }`}
                 >
                   <BarChart3 className="w-4 h-4" />
                   <span>Analytics</span>
+                </Link>
+
+                <Link
+                  href="/browse"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
+                    pathname === "/browse" || pathname.startsWith("/browse/")
+                      ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
+                      : `text-gray-600 ${roleStyle.hoverBg}`
+                  }`}
+                >
+                  <Search className="w-4 h-4" />
+                  <span>Browse</span>
                 </Link>
               </>
             )}
@@ -200,7 +211,7 @@ export default function Navigation() {
               <>
                 <Link
                   href="/influencer"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
                     pathname === "/influencer"
                       ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
                       : `text-gray-600 ${roleStyle.hoverBg}`
@@ -212,19 +223,19 @@ export default function Navigation() {
 
                 <Link
                   href="/browse"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
-                    pathname === "/browse"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
+                    pathname === "/browse" || pathname.startsWith("/browse/")
                       ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
                       : `text-gray-600 ${roleStyle.hoverBg}`
                   }`}
                 >
                   <Search className="w-4 h-4" />
-                  <span>Find Campaigns</span>
+                  <span>Browse</span>
                 </Link>
 
                 <Link
                   href="/influencer/earnings"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
                     pathname === "/influencer/earnings"
                       ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
                       : `text-gray-600 ${roleStyle.hoverBg}`
@@ -235,26 +246,10 @@ export default function Navigation() {
                 </Link>
               </>
             )}
-
-            {isBrowse && !isOrganizer && !isInfluencer && (
-              <>
-                <Link
-                  href="/browse"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
-                    pathname === "/browse"
-                      ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
-                      : `text-gray-600 ${roleStyle.hoverBg}`
-                  }`}
-                >
-                  <Search className="w-4 h-4" />
-                  <span>Browse Campaigns</span>
-                </Link>
-              </>
-            )}
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-3 flex-shrink-0">
             {/* Web3 Connect Button - Commented out, moved to profile dropdown */}
             {/* <Web3ConnectButton /> */}
 

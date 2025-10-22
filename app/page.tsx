@@ -61,7 +61,7 @@ export default function Home() {
             className="flex"
           >
             <Link
-              href="/organizer"
+              href="/login"
               className="flex flex-col w-full bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all group border border-white/20"
             >
               <div className="flex items-center justify-between mb-4">
@@ -126,7 +126,7 @@ export default function Home() {
             className="flex"
           >
             <Link
-              href="/influencer"
+              href="/login"
               className="flex flex-col w-full bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all group border border-white/20"
             >
               <div className="flex items-center justify-between mb-4">
@@ -145,7 +145,7 @@ export default function Home() {
                 performance
               </p>
               <div className="flex items-center text-pink-600 font-semibold group-hover:gap-3 transition-all mt-auto">
-                <span>View Dashboard</span>
+                <span>Get Started</span>
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>

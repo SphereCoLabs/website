@@ -20,7 +20,9 @@ import {
   AtSign,
   Palette,
   TrendingUp,
+  Wallet,
 } from "lucide-react";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import Web3Verification from "./Web3Verification";
 
 interface CampaignForm {
@@ -42,12 +44,9 @@ const platforms = ["Instagram", "TikTok", "YouTube", "Twitter", "LinkedIn"];
 const contentTypes = ["Posts", "Stories", "Reels", "Videos", "Live Streams"];
 
 export default function CampaignCreator() {
+  const { address, isConnected } = useAccount();
+  const { connectors, connect } = useConnect();
   const [currentStep, setCurrentStep] = useState(0);
-  const [isConnected, setIsConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
-  const [verificationStatus, setVerificationStatus] = useState<
-    "idle" | "connecting" | "signing" | "verified" | "error"
-  >("idle");
 
   const [form, setForm] = useState<CampaignForm>({
     title: "",
@@ -65,32 +64,12 @@ export default function CampaignCreator() {
   });
 
   const steps = [
-    { title: "Web3 Verification", icon: Sparkles },
     { title: "Campaign Basics", icon: FileText },
     { title: "Budget & Timeline", icon: Calendar },
     { title: "Platform & Content", icon: Globe },
     { title: "Guidelines", icon: CheckCircle2 },
     { title: "Review & Publish", icon: Eye },
   ];
-
-  const handleConnect = async () => {
-    setVerificationStatus("connecting");
-    // Simulate wallet connection
-    setTimeout(() => {
-      setIsConnected(true);
-      setWalletAddress("0x742d35Cc6633C0532925a3b8D3dD3e8f8C5c7a");
-      setVerificationStatus("idle");
-    }, 2000);
-  };
-
-  const handleSign = async () => {
-    setVerificationStatus("signing");
-    // Simulate signing
-    setTimeout(() => {
-      setVerificationStatus("verified");
-      setCurrentStep(1);
-    }, 3000);
-  };
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -123,17 +102,6 @@ export default function CampaignCreator() {
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
-        return (
-          <Web3Verification
-            isConnected={isConnected}
-            address={walletAddress}
-            onConnect={handleConnect}
-            onSign={handleSign}
-            verificationStatus={verificationStatus}
-          />
-        );
-
-      case 1:
         return (
           <div className="space-y-6">
             <div>
@@ -180,7 +148,7 @@ export default function CampaignCreator() {
           </div>
         );
 
-      case 2:
+      case 1:
         return (
           <div className="space-y-6">
             <div>
@@ -537,8 +505,8 @@ export default function CampaignCreator() {
       </motion.div>
 
       {/* Navigation */}
-      {currentStep > 0 && verificationStatus === "verified" && (
-        <div className="flex justify-between">
+      <div className="flex justify-between">
+        {currentStep > 0 && (
           <button
             onClick={handlePrevious}
             className="py-3 px-6 bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-700 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm hover:shadow"
@@ -546,18 +514,18 @@ export default function CampaignCreator() {
             <ArrowLeft className="w-5 h-5" />
             <span>Previous</span>
           </button>
+        )}
 
-          {currentStep < steps.length - 1 && (
-            <button
-              onClick={handleNext}
-              className="py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all flex items-center gap-2 shadow-md hover:shadow-lg"
-            >
-              <span>Next Step</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          )}
-        </div>
-      )}
+        {currentStep < steps.length - 1 && (
+          <button
+            onClick={handleNext}
+            className="py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all flex items-center gap-2 shadow-md hover:shadow-lg ml-auto"
+          >
+            <span>Next Step</span>
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
