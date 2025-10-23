@@ -100,7 +100,9 @@ export default function CreateCampaignPage() {
                 >
                   <Wallet className="w-5 h-5" />
                   <span>
-                    {isConnecting ? "Connecting..." : `Connect ${connector.name}`}
+                    {isConnecting
+                      ? "Connecting..."
+                      : `Connect ${connector.name}`}
                   </span>
                 </button>
               ))}
