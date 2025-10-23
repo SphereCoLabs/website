@@ -4,10 +4,26 @@ import CampaignCreator from "@/components/campaign/CampaignCreator";
 import { useAccount, useConnect } from "wagmi";
 import { motion } from "framer-motion";
 import { Wallet, AlertCircle, Sparkles } from "lucide-react";
+import { useState } from "react";
 
 export default function CreateCampaignPage() {
   const { address, isConnected } = useAccount();
-  const { connectors, connect } = useConnect();
+  const { connectors, connectAsync } = useConnect();
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleConnect = async (connector: any) => {
+    try {
+      setIsConnecting(true);
+      setError(null);
+      await connectAsync({ connector });
+    } catch (error: any) {
+      console.error("Error connecting wallet:", error);
+      setError(error?.message || "Failed to connect wallet");
+    } finally {
+      setIsConnecting(false);
+    }
+  };
 
   // Show wallet connection prompt if not connected
   if (!isConnected) {
@@ -46,21 +62,49 @@ export default function CreateCampaignPage() {
               </div>
             </div>
 
-            {/* Connect Button */}
-            <button
-              onClick={() => {
-                const injectedConnector = connectors.find(
-                  (c) => c.type === "injected"
-                );
-                if (injectedConnector) {
-                  connect({ connector: injectedConnector });
-                }
-              }}
-              className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-            >
-              <Wallet className="w-5 h-5" />
-              <span>Connect Wallet</span>
-            </button>
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-red-900">
+                  <p className="font-semibold mb-1">Connection Failed</p>
+                  <p className="text-red-800">{error}</p>
+                  <p className="text-red-700 mt-2">
+                    {error.includes("Provider not found") && (
+                      <>
+                        Please install{" "}
+                        <a
+                          href="https://metamask.io/download/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline font-semibold"
+                        >
+                          MetaMask
+                        </a>{" "}
+                        or use WalletConnect below.
+                      </>
+                    )}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Connect Buttons */}
+            <div className="space-y-3 mb-6">
+              {connectors.map((connector) => (
+                <button
+                  key={connector.id}
+                  onClick={() => handleConnect(connector)}
+                  disabled={isConnecting}
+                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Wallet className="w-5 h-5" />
+                  <span>
+                    {isConnecting ? "Connecting..." : `Connect ${connector.name}`}
+                  </span>
+                </button>
+              ))}
+            </div>
 
             {/* Or connect from profile */}
             <p className="text-center text-sm text-gray-500 mt-6">

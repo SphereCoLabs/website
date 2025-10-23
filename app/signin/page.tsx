@@ -25,7 +25,7 @@ type UserRole = "organizer" | "influencer";
 export default function SignInPage() {
   const router = useRouter();
   const { address, isConnected, isConnecting } = useAccount();
-  const { connectors, connect } = useConnect();
+  const { connectors, connectAsync } = useConnect();
   const { disconnect } = useDisconnect();
   const chainId = useChainId();
 
@@ -42,6 +42,7 @@ export default function SignInPage() {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showRoleSelection, setShowRoleSelection] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -71,12 +72,19 @@ export default function SignInPage() {
   const handleWalletConnect = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       const injectedConnector = connectors.find((c) => c.type === "injected");
       if (injectedConnector) {
-        connect({ connector: injectedConnector });
+        await connectAsync({ connector: injectedConnector });
+      } else {
+        // If no injected connector, try the first available
+        if (connectors.length > 0) {
+          await connectAsync({ connector: connectors[0] });
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to connect wallet:", error);
+      setError(error?.message || "Failed to connect wallet");
     } finally {
       setIsLoading(false);
     }
@@ -213,6 +221,33 @@ export default function SignInPage() {
                   </li>
                 </ul>
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-red-900">
+                      <p className="font-semibold mb-1">Connection Failed</p>
+                      <p className="text-red-800 mb-2">{error}</p>
+                      {error.includes("Provider not found") && (
+                        <p className="text-red-700">
+                          Please install{" "}
+                          <a
+                            href="https://metamask.io/download/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline font-semibold"
+                          >
+                            MetaMask
+                          </a>{" "}
+                          or try another wallet.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Connect Button */}
               <button

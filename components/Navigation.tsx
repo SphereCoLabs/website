@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useBasename } from "@/lib/web3/hooks/useBasename";
 // import { Web3ConnectButton } from "./Web3ConnectButton";
 import {
   Home,
@@ -37,8 +38,23 @@ export default function Navigation() {
 
   // Web3 hooks
   const { address, isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { connectAsync, connectors } = useConnect();
   const { disconnect } = useDisconnect();
+  const { basename, displayName, hasBasename } = useBasename();
+
+  // Determine display name based on basename or default
+  const getUserDisplayName = () => {
+    if (hasBasename && basename) {
+      return basename;
+    }
+    if (isOrganizer) {
+      return "Brand Manager";
+    }
+    if (isInfluencer) {
+      return "Influencer";
+    }
+    return "User";
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -116,9 +132,16 @@ export default function Navigation() {
 
   // Handle disconnect
   const handleDisconnect = () => {
-    disconnect();
-    setIsWalletModalOpen(false);
-    setIsDropdownOpen(false);
+    try {
+      disconnect();
+      setIsWalletModalOpen(false);
+      setIsDropdownOpen(false);
+    } catch (error) {
+      console.error("Error disconnecting wallet:", error);
+      // Still close modals even if disconnect fails
+      setIsWalletModalOpen(false);
+      setIsDropdownOpen(false);
+    }
   };
 
   return (
@@ -283,11 +306,13 @@ export default function Navigation() {
                 </div>
                 <div className="hidden md:block text-left">
                   <p className="text-sm font-medium text-gray-900">
-                    {roleStyle.userName}
+                    {getUserDisplayName()}
                   </p>
                   <p className="text-xs text-gray-500">
                     {isConnected && address
-                      ? `${address.slice(0, 6)}...${address.slice(-4)}`
+                      ? hasBasename && basename
+                        ? `${address.slice(0, 6)}...${address.slice(-4)}`
+                        : `${address.slice(0, 6)}...${address.slice(-4)}`
                       : "Not Connected"}
                   </p>
                 </div>
@@ -323,7 +348,7 @@ export default function Navigation() {
                         </div>
                         <div>
                           <p className="font-bold text-lg">
-                            {roleStyle.userName}
+                            {getUserDisplayName()}
                           </p>
                           <p className="text-sm opacity-90">
                             {roleStyle.roleName}
@@ -363,9 +388,16 @@ export default function Navigation() {
                           {connectors.map((connector) => (
                             <button
                               key={connector.id}
-                              onClick={() => {
-                                connect({ connector });
-                                setIsDropdownOpen(false);
+                              onClick={async () => {
+                                try {
+                                  await connectAsync({ connector });
+                                  setIsDropdownOpen(false);
+                                } catch (error) {
+                                  console.error(
+                                    "Error connecting wallet:",
+                                    error
+                                  );
+                                }
                               }}
                               className="w-full flex items-center gap-3 px-3 py-2 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-left"
                             >

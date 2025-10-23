@@ -5,8 +5,16 @@ import { Wallet, LogOut } from "lucide-react";
 
 export function Web3ConnectButton() {
   const { address, isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { connectAsync, connectors } = useConnect();
   const { disconnect } = useDisconnect();
+
+  const handleDisconnect = () => {
+    try {
+      disconnect();
+    } catch (error) {
+      console.error("Error disconnecting wallet:", error);
+    }
+  };
 
   if (isConnected && address) {
     return (
@@ -18,7 +26,7 @@ export function Web3ConnectButton() {
           </span>
         </div>
         <button
-          onClick={() => disconnect()}
+          onClick={handleDisconnect}
           className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
         >
           <LogOut className="w-4 h-4" />
@@ -33,7 +41,13 @@ export function Web3ConnectButton() {
       {connectors.map((connector) => (
         <button
           key={connector.id}
-          onClick={() => connect({ connector })}
+          onClick={async () => {
+            try {
+              await connectAsync({ connector });
+            } catch (error) {
+              console.error("Error connecting wallet:", error);
+            }
+          }}
           className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
         >
           <Wallet className="w-4 h-4" />

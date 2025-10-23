@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ArrowRight,
   ArrowLeft,
@@ -180,12 +180,13 @@ export default function CampaignCreator() {
     }
   };
 
-  // Handle success - redirect to organizer dashboard
-  if (isSuccess && hash) {
-    setTimeout(() => {
-      router.push("/organizer");
-    }, 3000);
-  }
+  // Handle success - redirect to organizer dashboard (move side-effect into useEffect)
+  useEffect(() => {
+    if (isSuccess && hash) {
+      const t = setTimeout(() => router.push("/organizer"), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [isSuccess, hash, router]);
 
   const renderStepContent = () => {
     console.log("Current Step:", currentStep);

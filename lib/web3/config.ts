@@ -1,11 +1,6 @@
 import { http, createConfig } from "wagmi";
 import { mainnet, sepolia, polygonAmoy, base, baseSepolia } from "wagmi/chains";
-import {
-  injected,
-  metaMask,
-  walletConnect,
-  coinbaseWallet,
-} from "wagmi/connectors";
+import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
 
 // Define the chains you want to support
 export const chains = [sepolia, polygonAmoy, base, baseSepolia] as const;
@@ -16,9 +11,13 @@ const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "";
 export const config = createConfig({
   chains: [sepolia, polygonAmoy, base, baseSepolia],
   connectors: [
-    injected(),
-    metaMask(),
-    walletConnect({ projectId }),
+    injected({
+      target: "metaMask",
+    }),
+    walletConnect({
+      projectId,
+      showQrModal: true,
+    }),
     coinbaseWallet({
       appName: "SphereCo",
       appLogoUrl: "https://sphereco.app/favicon.svg",
