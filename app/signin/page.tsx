@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useChainId } from "wagmi";
 import {
   Wallet,
   Users,
@@ -13,8 +13,12 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
+  User,
+  Globe,
 } from "lucide-react";
 import Link from "next/link";
+import { useBasename } from "@/lib/web3/hooks/useBasename";
+import { generateUserDataWithBasename } from "@/lib/web3/basename";
 
 type UserRole = "organizer" | "influencer";
 
@@ -23,6 +27,17 @@ export default function SignInPage() {
   const { address, isConnected, isConnecting } = useAccount();
   const { connectors, connect } = useConnect();
   const { disconnect } = useDisconnect();
+  const chainId = useChainId();
+
+  // Basename hook for resolving ENS names
+  const {
+    basename,
+    avatar,
+    displayName,
+    hasBasename,
+    isBaseNetwork,
+    isLoading: basenameLoading,
+  } = useBasename();
 
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,31 +82,52 @@ export default function SignInPage() {
     }
   };
 
-  const handleRoleSelection = (role: UserRole) => {
+  const handleRoleSelection = async (role: UserRole) => {
     if (!address) return;
 
     setIsLoading(true);
 
-    // Create user data with wallet address
-    const userData = {
-      name: `User ${address.slice(0, 6)}`, // Generate name from wallet address
-      email: `${address.slice(0, 8)}@wallet.user`, // Generate email
-      role: role,
-      walletAddress: address,
-      signedInAt: new Date().toISOString(),
-    };
+    try {
+      // Generate user data with Basename integration
+      const userData = await generateUserDataWithBasename(
+        address,
+        role,
+        chainId
+      );
 
-    // Store user data
-    localStorage.setItem("sphereco_user", JSON.stringify(userData));
+      // Store user data
+      localStorage.setItem("sphereco_user", JSON.stringify(userData));
 
-    // Redirect based on role
-    setTimeout(() => {
-      if (role === "organizer") {
-        router.push("/organizer");
-      } else {
-        router.push("/influencer");
-      }
-    }, 1000);
+      // Redirect based on role
+      setTimeout(() => {
+        if (role === "organizer") {
+          router.push("/organizer");
+        } else {
+          router.push("/influencer");
+        }
+      }, 1000);
+    } catch (error) {
+      console.error("Error generating user data:", error);
+      // Fallback to basic user data if Basename fails
+      const fallbackUserData = {
+        name: `User ${address.slice(0, 6)}`,
+        email: `${address.slice(0, 8)}@wallet.user`,
+        role: role,
+        walletAddress: address,
+        signedInAt: new Date().toISOString(),
+      };
+      localStorage.setItem("sphereco_user", JSON.stringify(fallbackUserData));
+
+      setTimeout(() => {
+        if (role === "organizer") {
+          router.push("/organizer");
+        } else {
+          router.push("/influencer");
+        }
+      }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDisconnect = () => {
@@ -229,14 +265,43 @@ export default function SignInPage() {
               <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        alt="Avatar"
+                        className="w-full h-full rounded-lg object-cover"
+                      />
+                    ) : (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    )}
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-green-800">
-                      Wallet Connected
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-green-800">
+                        {basenameLoading ? (
+                          <span className="flex items-center gap-2">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Resolving Basename...
+                          </span>
+                        ) : hasBasename ? (
+                          <span className="flex items-center gap-2">
+                            <Globe className="w-4 h-4" />
+                            {displayName}
+                          </span>
+                        ) : (
+                          "Wallet Connected"
+                        )}
+                      </p>
+                      {!isBaseNetwork && (
+                        <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                          Switch to Base for Basename
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-green-700 font-mono">
-                      {address?.slice(0, 8)}...{address?.slice(-6)}
+                      {hasBasename && basename
+                        ? basename
+                        : `${address?.slice(0, 8)}...${address?.slice(-6)}`}
                     </p>
                   </div>
                   <button

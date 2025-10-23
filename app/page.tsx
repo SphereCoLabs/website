@@ -153,63 +153,7 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
-
-        {/* Web3 Sign In Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mb-16"
-        >
-          <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 rounded-3xl p-8 md:p-12 shadow-2xl hover:shadow-3xl transition-all relative overflow-hidden">
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24"></div>
-
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-              {/* Content */}
-              <div className="flex-grow text-center md:text-left">
-                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-white/30">
-                  <Sparkles className="w-4 h-4 text-yellow-300" />
-                  <span className="text-white font-medium text-sm">
-                    Web3 Native
-                  </span>
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                  Already Have an Account?
-                </h2>
-                <p className="text-white/90 text-lg md:text-xl leading-relaxed max-w-2xl mb-6">
-                  Connect with your Web3 wallet to sign in instantly. Secure,
-                  decentralized authentication without passwords or forms.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                  <Link
-                    href="/signin"
-                    className="inline-flex items-center gap-3 bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl"
-                  >
-                    <Wallet className="w-5 h-5" />
-                    <span>Sign In with Wallet</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                  <Link
-                    href="/login"
-                    className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all border border-white/30"
-                  >
-                    <span>Create New Account</span>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Icon */}
-              <div className="flex-shrink-0">
-                <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-xl border border-white/30">
-                  <Wallet className="w-12 h-12 text-white" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
+        
         {/* Documentation Card - Full Width Featured Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
