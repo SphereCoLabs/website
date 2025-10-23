@@ -90,7 +90,7 @@ export default function Navigation() {
         userName: "Content Creator",
       };
     }
-    // Default - should not reach here normally
+    // Default - should not reach here (navigation only shows for organizer/influencer)
     return {
       gradient: "from-gray-500 to-gray-600",
       bgColor: "bg-gray-600",
@@ -98,8 +98,8 @@ export default function Navigation() {
       hoverBg: "hover:bg-gray-50",
       activeBg: "bg-gray-100",
       badge: "bg-gray-500",
-      roleName: "User",
-      userName: "User",
+      roleName: "Unknown",
+      userName: "Unknown",
     };
   };
 
@@ -193,17 +193,18 @@ export default function Navigation() {
                   <span>Analytics</span>
                 </Link>
 
-                <Link
-                  href="/browse"
+                {/* <Link
+                  href="/influencer/browse"
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
-                    pathname === "/browse" || pathname.startsWith("/browse/")
+                    pathname === "/influencer/browse" ||
+                    pathname.startsWith("/influencer/browse/")
                       ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
                       : `text-gray-600 ${roleStyle.hoverBg}`
                   }`}
                 >
                   <Search className="w-4 h-4" />
                   <span>Browse</span>
-                </Link>
+                </Link> */}
               </>
             )}
 
@@ -222,9 +223,10 @@ export default function Navigation() {
                 </Link>
 
                 <Link
-                  href="/browse"
+                  href="/influencer/browse"
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
-                    pathname === "/browse" || pathname.startsWith("/browse/")
+                    pathname === "/influencer/browse" ||
+                    pathname.startsWith("/influencer/browse/")
                       ? `${roleStyle.activeBg} ${roleStyle.textColor} font-medium`
                       : `text-gray-600 ${roleStyle.hoverBg}`
                   }`}

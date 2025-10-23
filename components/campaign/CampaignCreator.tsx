@@ -21,8 +21,14 @@ import {
   Palette,
   TrendingUp,
   Wallet,
+  Loader2,
+  CheckCircle,
 } from "lucide-react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { parseEther } from "viem";
+import { useCreateCampaign } from "@/lib/web3/hooks/useCampaign";
+import { CampaignPlatform, CampaignContentType } from "@/lib/web3/types";
+import { useRouter } from "next/navigation";
 import Web3Verification from "./Web3Verification";
 
 interface CampaignForm {
@@ -40,13 +46,41 @@ interface CampaignForm {
   contentType: string[];
 }
 
-const platforms = ["Instagram", "TikTok", "YouTube", "Twitter", "LinkedIn"];
-const contentTypes = ["Posts", "Stories", "Reels", "Videos", "Live Streams"];
+const platforms = ["Instagram", "TikTok", "YouTube", "Twitter", "Facebook"];
+const contentTypes = ["Post", "Story", "Reel", "Video", "Article"];
+
+// Helper functions to convert string to enum
+const platformToEnum = (platform: string): CampaignPlatform => {
+  const map: Record<string, CampaignPlatform> = {
+    Instagram: CampaignPlatform.Instagram,
+    TikTok: CampaignPlatform.TikTok,
+    YouTube: CampaignPlatform.YouTube,
+    Twitter: CampaignPlatform.Twitter,
+    Facebook: CampaignPlatform.Facebook,
+  };
+  return map[platform] ?? CampaignPlatform.Instagram;
+};
+
+const contentTypeToEnum = (contentType: string): CampaignContentType => {
+  const map: Record<string, CampaignContentType> = {
+    Post: CampaignContentType.Post,
+    Story: CampaignContentType.Story,
+    Reel: CampaignContentType.Reel,
+    Video: CampaignContentType.Video,
+    Article: CampaignContentType.Article,
+  };
+  return map[contentType] ?? CampaignContentType.Post;
+};
 
 export default function CampaignCreator() {
+  const router = useRouter();
   const { address, isConnected } = useAccount();
   const { connectors, connect } = useConnect();
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Web3 hook for creating campaign
+  const { createCampaign, hash, isPending, isConfirming, isSuccess, error } =
+    useCreateCampaign();
 
   const [form, setForm] = useState<CampaignForm>({
     title: "",
@@ -99,7 +133,62 @@ export default function CampaignCreator() {
     }));
   };
 
+  // Handle campaign submission to smart contract
+  const handlePublishCampaign = async () => {
+    if (!isConnected) {
+      alert("Please connect your wallet first!");
+      return;
+    }
+
+    try {
+      // Convert dates to Unix timestamps
+      const startDate = BigInt(
+        Math.floor(new Date(form.timeline.start).getTime() / 1000)
+      );
+      const endDate = BigInt(
+        Math.floor(new Date(form.timeline.end).getTime() / 1000)
+      );
+
+      // Use first platform and content type (smart contract expects single value)
+      const primaryPlatform =
+        form.platforms.length > 0
+          ? platformToEnum(form.platforms[0])
+          : CampaignPlatform.Instagram;
+
+      const primaryContentType =
+        form.contentType.length > 0
+          ? contentTypeToEnum(form.contentType[0])
+          : CampaignContentType.Post;
+
+      // Prepare campaign data for smart contract
+      createCampaign({
+        title: form.title,
+        description: form.brief,
+        brief: form.brief,
+        goal: form.goal,
+        startDate: startDate,
+        endDate: endDate,
+        targetPlatform: primaryPlatform,
+        contentTypes: primaryContentType,
+        targetAudience: form.targetAudience,
+        guideline: form.guidelines,
+        value: parseEther(form.budget.toString()), // Convert budget to Wei
+      });
+    } catch (err) {
+      console.error("Error creating campaign:", err);
+      alert("Failed to create campaign. Please try again.");
+    }
+  };
+
+  // Handle success - redirect to organizer dashboard
+  if (isSuccess && hash) {
+    setTimeout(() => {
+      router.push("/organizer");
+    }, 3000);
+  }
+
   const renderStepContent = () => {
+    console.log("Current Step:", currentStep);
     switch (currentStep) {
       case 0:
         return (
@@ -212,7 +301,7 @@ export default function CampaignCreator() {
           </div>
         );
 
-      case 3:
+      case 2:
         return (
           <div className="space-y-6">
             <div>
@@ -277,7 +366,7 @@ export default function CampaignCreator() {
           </div>
         );
 
-      case 4:
+      case 3:
         return (
           <div className="space-y-6">
             <div>
@@ -327,7 +416,8 @@ export default function CampaignCreator() {
           </div>
         );
 
-      case 5:
+      case 4:
+        console.log("Rendering case 4 - Review & Publish");
         return (
           <div className="space-y-6">
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
@@ -412,25 +502,88 @@ export default function CampaignCreator() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 onClick={() => console.log("Save as draft")}
-                className="py-3 px-6 bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-700 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow"
+                disabled={isPending || isConfirming}
+                className="py-3 px-6 bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-700 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save className="w-5 h-5" />
                 <span>Save as Draft</span>
               </button>
 
               <button
-                onClick={() => console.log("Publish campaign")}
-                className="py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                onClick={handlePublishCampaign}
+                disabled={isPending || isConfirming || isSuccess}
+                className="py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span>Publish Campaign</span>
-                <ArrowRight className="w-5 h-5" />
+                {isPending && (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Confirm in Wallet...</span>
+                  </>
+                )}
+                {isConfirming && (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Publishing...</span>
+                  </>
+                )}
+                {isSuccess && (
+                  <>
+                    <CheckCircle className="w-5 h-5" />
+                    <span>Published!</span>
+                  </>
+                )}
+                {!isPending && !isConfirming && !isSuccess && (
+                  <>
+                    <span>Publish Campaign</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
               </button>
             </div>
+
+            {/* Transaction Status */}
+            {(isPending || isConfirming || isSuccess || error) && (
+              <div className="mt-6">
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-800">
+                    <p className="font-semibold mb-1">Transaction Error</p>
+                    <p className="text-sm">{error.message}</p>
+                  </div>
+                )}
+                {isSuccess && hash && (
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                    <p className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      Campaign Created Successfully!
+                    </p>
+                    <p className="text-sm text-green-700 mb-2">
+                      Transaction Hash:{" "}
+                      <code className="bg-green-100 px-2 py-1 rounded text-xs">
+                        {hash.slice(0, 10)}...{hash.slice(-8)}
+                      </code>
+                    </p>
+                    <p className="text-sm text-green-600">
+                      Redirecting to dashboard in 3 seconds...
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         );
 
       default:
-        return null;
+        console.log("Default case triggered! Current step:", currentStep);
+        return (
+          <div className="text-center py-8">
+            <p className="text-red-600 font-semibold">
+              Error: Step {currentStep} not found
+            </p>
+            <p className="text-gray-600 mt-2">
+              Please refresh the page or contact support
+            </p>
+          </div>
+        );
     }
   };
 

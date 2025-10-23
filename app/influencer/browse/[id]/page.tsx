@@ -111,7 +111,7 @@ export default function CampaignDetailPage() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Back Button */}
         <Link
-          href="/browse"
+          href="/influencer/browse"
           className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />

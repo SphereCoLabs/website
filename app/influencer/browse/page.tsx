@@ -253,7 +253,7 @@ export default function InfluencerBrowsePage() {
 
                   {/* Action Button */}
                   <Link
-                    href={`/browse/${campaign.id}`}
+                    href={`/influencer/browse/${campaign.id}`}
                     className="block w-full py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white text-center rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition-all"
                   >
                     View Details & Apply

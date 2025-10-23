@@ -80,9 +80,9 @@ export default function LoginPage() {
               <Sparkles className="w-5 h-5 text-yellow-300" />
               <span className="font-medium">Welcome to SphereCo</span>
             </motion.div>
-            <h1 className="text-3xl font-bold mb-2">Get Started</h1>
+            <h1 className="text-3xl font-bold mb-2">Create Account</h1>
             <p className="text-white/90">
-              Create your account to start your journey
+              Fill out your details to get started
             </p>
           </div>
 
@@ -278,10 +278,10 @@ export default function LoginPage() {
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
               <Link
-                href="/login"
+                href="/signin"
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
-                Sign In
+                Sign In with Wallet
               </Link>
             </p>
           </div>
