@@ -385,28 +385,34 @@ export default function Navigation() {
                           CONNECT WALLET
                         </p>
                         <div className="space-y-2">
-                          {connectors.map((connector) => (
-                            <button
-                              key={connector.id}
-                              onClick={async () => {
-                                try {
-                                  await connectAsync({ connector });
-                                  setIsDropdownOpen(false);
-                                } catch (error) {
-                                  console.error(
-                                    "Error connecting wallet:",
-                                    error
-                                  );
-                                }
-                              }}
-                              className="w-full flex items-center gap-3 px-3 py-2 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-left"
-                            >
-                              <Wallet className="w-4 h-4 text-blue-600" />
-                              <span className="text-sm font-medium text-gray-900">
-                                {connector.name}
-                              </span>
-                            </button>
-                          ))}
+                          {connectors && connectors.length > 0 ? (
+                            connectors.map((connector) => (
+                              <button
+                                key={connector.id}
+                                onClick={async () => {
+                                  try {
+                                    await connectAsync({ connector });
+                                    setIsDropdownOpen(false);
+                                  } catch (error) {
+                                    console.error(
+                                      "Error connecting wallet:",
+                                      error
+                                    );
+                                  }
+                                }}
+                                className="w-full flex items-center gap-3 px-3 py-2 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-left"
+                              >
+                                <Wallet className="w-4 h-4 text-blue-600" />
+                                <span className="text-sm font-medium text-gray-900">
+                                  {connector.name}
+                                </span>
+                              </button>
+                            ))
+                          ) : (
+                            <div className="text-sm text-gray-500 px-3 py-2">
+                              Loading wallets...
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}

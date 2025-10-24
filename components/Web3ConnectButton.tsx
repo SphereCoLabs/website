@@ -89,40 +89,50 @@ export function Web3ConnectButton() {
 
   return (
     <div className="flex items-center gap-2">
-      {connectors.map((connector) => (
-        <button
-          key={connector.id}
-          onClick={async () => {
-            try {
-              const result = await connectAsync({
-                connector,
-                chainId: baseSepolia.id, // Force connect to Base Sepolia
-              });
+      {connectors && connectors.length > 0 ? (
+        connectors.map((connector) => (
+          <button
+            key={connector.id}
+            onClick={async () => {
+              try {
+                const result = await connectAsync({
+                  connector,
+                  chainId: baseSepolia.id, // Force connect to Base Sepolia
+                });
 
-              // If connected but wrong network, prompt to switch
-              if (result.chainId !== baseSepolia.id) {
-                try {
-                  await switchChain({ chainId: baseSepolia.id });
-                } catch (switchError) {
-                  console.error(
-                    "Error switching to Base Sepolia:",
-                    switchError
-                  );
-                  alert(
-                    "Please manually switch your wallet to Base Sepolia network"
-                  );
+                // If connected but wrong network, prompt to switch
+                if (result.chainId !== baseSepolia.id) {
+                  try {
+                    await switchChain({ chainId: baseSepolia.id });
+                  } catch (switchError) {
+                    console.error(
+                      "Error switching to Base Sepolia:",
+                      switchError
+                    );
+                    alert(
+                      "Please manually switch your wallet to Base Sepolia network"
+                    );
+                  }
                 }
+              } catch (error) {
+                console.error("Error connecting wallet:", error);
               }
-            } catch (error) {
-              console.error("Error connecting wallet:", error);
-            }
-          }}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+          >
+            <Wallet className="w-4 h-4" />
+            <span>Connect {connector.name}</span>
+          </button>
+        ))
+      ) : (
+        <button
+          disabled
+          className="flex items-center gap-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
         >
           <Wallet className="w-4 h-4" />
-          <span>Connect {connector.name}</span>
+          <span>Loading wallets...</span>
         </button>
-      ))}
+      )}
     </div>
   );
 }

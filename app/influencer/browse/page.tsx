@@ -17,8 +17,9 @@ import {
   useGetAllCampaignIds,
   useGetCampaign,
 } from "@/lib/web3/hooks/useCampaign";
-import { Campaign as CampaignType } from "@/lib/web3/types";
+import { Campaign as CampaignType, UserRole } from "@/lib/web3/types";
 import { NetworkGuard } from "@/components/NetworkGuard";
+import { UserRegistration } from "@/components/UserRegistration";
 
 function CampaignCard({
   id,
@@ -170,142 +171,144 @@ export default function InfluencerBrowsePage() {
 
   return (
     <NetworkGuard>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50 p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Find Campaigns
-              </h1>
-              <p className="text-gray-600">
-                Discover and apply to campaigns on Base Sepolia Network
-              </p>
-              {!idsLoading && (
-                <p className="text-sm text-blue-600 mt-1">
-                  {ids.length} campaign(s) found on-chain
+      <UserRegistration requiredRole={UserRole.KOL}>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50 p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Find Campaigns
+                </h1>
+                <p className="text-gray-600">
+                  Discover and apply to campaigns on Base Sepolia Network
                 </p>
-              )}
-            </div>
-            <button
-              onClick={() => setRefreshKey((k) => k + 1)}
-              disabled={idsLoading}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-            >
-              <RefreshCcw
-                className={`w-4 h-4 ${idsLoading ? "animate-spin" : ""}`}
-              />
-              <span className="text-sm font-medium">Refresh</span>
-            </button>
-          </div>
-
-          {/* Search and Filters */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Search */}
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search campaigns..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                />
+                {!idsLoading && (
+                  <p className="text-sm text-blue-600 mt-1">
+                    {ids.length} campaign(s) found on-chain
+                  </p>
+                )}
               </div>
-
-              {/* Filter Button */}
-              <button className="flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-                <Filter className="w-5 h-5" />
-                <span className="font-medium">Filters</span>
+              <button
+                onClick={() => setRefreshKey((k) => k + 1)}
+                disabled={idsLoading}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                <RefreshCcw
+                  className={`w-4 h-4 ${idsLoading ? "animate-spin" : ""}`}
+                />
+                <span className="text-sm font-medium">Refresh</span>
               </button>
             </div>
+
+            {/* Search and Filters */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                {/* Search */}
+                <div className="flex-1 relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search campaigns..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  />
+                </div>
+
+                {/* Filter Button */}
+                <button className="flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                  <Filter className="w-5 h-5" />
+                  <span className="font-medium">Filters</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Stats Bar */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                    <Target className="w-6 h-6 text-pink-600" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {filteredCampaigns.length}
+                    </p>
+                    <p className="text-sm text-gray-600">Available Campaigns</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <DollarSign className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {filteredCampaigns
+                        .reduce(
+                          (sum, c) =>
+                            sum +
+                            (c.data?.reward ? Number(c.data.reward) / 1e18 : 0),
+                          0
+                        )
+                        .toFixed(4)}{" "}
+                      ETH
+                    </p>
+                    <p className="text-sm text-gray-600">Total Rewards</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Users className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {idsLoading ? "..." : ids.length}
+                    </p>
+                    <p className="text-sm text-gray-600">Total Campaigns</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Campaigns Grid */}
+            {idsLoading ? (
+              <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
+                <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4 animate-pulse" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Loading campaigns...
+                </h3>
+                <p className="text-gray-600">
+                  Please wait while we fetch data from the blockchain
+                </p>
+              </div>
+            ) : filteredCampaigns.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredCampaigns.map((c) => (
+                  <CampaignCard key={String(c.id)} id={c.id} data={c.data} />
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
+                <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  No campaigns found
+                </h3>
+                <p className="text-gray-600">
+                  Try adjusting your search or wait for new campaigns to be
+                  published
+                </p>
+              </div>
+            )}
           </div>
-
-          {/* Stats Bar */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
-                  <Target className="w-6 h-6 text-pink-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {filteredCampaigns.length}
-                  </p>
-                  <p className="text-sm text-gray-600">Available Campaigns</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {filteredCampaigns
-                      .reduce(
-                        (sum, c) =>
-                          sum +
-                          (c.data?.reward ? Number(c.data.reward) / 1e18 : 0),
-                        0
-                      )
-                      .toFixed(4)}{" "}
-                    ETH
-                  </p>
-                  <p className="text-sm text-gray-600">Total Rewards</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {idsLoading ? "..." : ids.length}
-                  </p>
-                  <p className="text-sm text-gray-600">Total Campaigns</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Campaigns Grid */}
-          {idsLoading ? (
-            <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
-              <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4 animate-pulse" />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Loading campaigns...
-              </h3>
-              <p className="text-gray-600">
-                Please wait while we fetch data from the blockchain
-              </p>
-            </div>
-          ) : filteredCampaigns.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCampaigns.map((c) => (
-                <CampaignCard key={String(c.id)} id={c.id} data={c.data} />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
-              <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                No campaigns found
-              </h3>
-              <p className="text-gray-600">
-                Try adjusting your search or wait for new campaigns to be
-                published
-              </p>
-            </div>
-          )}
         </div>
-      </div>
+      </UserRegistration>
     </NetworkGuard>
   );
 }

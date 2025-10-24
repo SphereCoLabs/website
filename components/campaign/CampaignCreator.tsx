@@ -140,6 +140,46 @@ export default function CampaignCreator() {
       return;
     }
 
+    // Validate required fields
+    if (!form.title.trim()) {
+      alert("Campaign title is required!");
+      return;
+    }
+    if (!form.brief.trim()) {
+      alert("Campaign brief is required!");
+      return;
+    }
+    if (!form.goal.trim()) {
+      alert("Campaign goal is required!");
+      return;
+    }
+    if (!form.targetAudience.trim()) {
+      alert(
+        "Target Audience is required! Please describe your target audience."
+      );
+      return;
+    }
+    if (!form.guidelines.trim()) {
+      alert("Campaign guidelines are required!");
+      return;
+    }
+    if (form.budget <= 0) {
+      alert("Budget must be greater than 0!");
+      return;
+    }
+    if (!form.timeline.start || !form.timeline.end) {
+      alert("Start and end dates are required!");
+      return;
+    }
+    if (form.platforms.length === 0) {
+      alert("Please select at least one platform!");
+      return;
+    }
+    if (form.contentType.length === 0) {
+      alert("Please select at least one content type!");
+      return;
+    }
+
     try {
       // Convert dates to Unix timestamps
       const startDate = BigInt(
@@ -352,7 +392,7 @@ export default function CampaignCreator() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Users className="w-4 h-4 text-blue-600" />
-                Target Audience
+                Target Audience <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={form.targetAudience}
@@ -362,6 +402,7 @@ export default function CampaignCreator() {
                 rows={3}
                 className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none resize-none transition-all"
                 placeholder="e.g., Age 18-35, fashion enthusiasts, urban lifestyle, US & Europe..."
+                required
               />
             </div>
           </div>
