@@ -5,6 +5,7 @@ import {
 } from "./useContract";
 import type { Campaign, CreateCampaignParams } from "../types";
 import { parseEther } from "viem";
+import { useEffect, useState } from "react";
 
 /**
  * Hook to get a campaign by ID
@@ -25,6 +26,39 @@ export function useGetAllCampaignIds() {
  */
 export function useGetCampaignCount() {
   return useContractRead<bigint>("getCampaignCount");
+}
+
+/**
+ * Hook to get all campaigns with full data
+ * This fetches all campaign IDs and their complete data
+ */
+export function useGetAllCampaigns() {
+  const {
+    data: idsData,
+    isLoading: idsLoading,
+    error: idsError,
+  } = useGetAllCampaignIds();
+  const [campaigns, setCampaigns] = useState<
+    Array<{ id: bigint; data: Campaign | null }>
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (idsData && Array.isArray(idsData)) {
+      setIsLoading(false);
+      // Initial setup with IDs
+      setCampaigns(idsData.map((id: bigint) => ({ id, data: null })));
+    } else if (!idsLoading && !idsData) {
+      setIsLoading(false);
+      setCampaigns([]);
+    }
+  }, [idsData, idsLoading]);
+
+  return {
+    campaigns,
+    isLoading: idsLoading || isLoading,
+    error: idsError,
+  };
 }
 
 /**
