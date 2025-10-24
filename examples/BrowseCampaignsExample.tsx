@@ -13,7 +13,10 @@
  */
 
 import { motion } from "framer-motion";
-import { useGetAllCampaignIds, useGetCampaign } from "@/lib/web3/hooks";
+import {
+  useGetAllCampaignIds,
+  useGetCampaign,
+} from "@/lib/web3/hooks/useCampaign";
 import { formatEther } from "viem";
 import { Calendar, DollarSign, Target, TrendingUp } from "lucide-react";
 import Link from "next/link";
@@ -36,7 +39,7 @@ function CampaignCard({ campaignId }: { campaignId: bigint }) {
     return null;
   }
 
-  const statusColors = {
+  const statusColors: Record<number, string> = {
     0: "bg-gray-100 text-gray-700", // Draft
     1: "bg-blue-100 text-blue-700", // Published
     2: "bg-green-100 text-green-700", // Active
@@ -44,7 +47,13 @@ function CampaignCard({ campaignId }: { campaignId: bigint }) {
     4: "bg-red-100 text-red-700", // Cancelled
   };
 
-  const statusText = ["Draft", "Published", "Active", "Completed", "Cancelled"];
+  const statusText: Record<number, string> = {
+    0: "Draft",
+    1: "Published",
+    2: "Active",
+    3: "Completed",
+    4: "Cancelled",
+  };
 
   return (
     <motion.div
@@ -64,10 +73,10 @@ function CampaignCard({ campaignId }: { campaignId: bigint }) {
         </div>
         <span
           className={`px-3 py-1 rounded-full text-xs font-semibold ${
-            statusColors[campaign.status]
+            statusColors[Number(campaign.status)] || statusColors[0]
           }`}
         >
-          {statusText[campaign.status]}
+          {statusText[Number(campaign.status)] || statusText[0]}
         </span>
       </div>
 
@@ -151,7 +160,7 @@ export default function BrowseCampaignsFromBlockchain() {
         {/* Campaigns Grid */}
         {campaignIds && campaignIds.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {campaignIds.map((id) => (
+            {campaignIds.map((id: bigint) => (
               <CampaignCard key={id.toString()} campaignId={id} />
             ))}
           </div>

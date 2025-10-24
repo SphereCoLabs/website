@@ -284,7 +284,7 @@ export default function CampaignCreator() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <DollarSign className="w-4 h-4 text-green-600" />
-                Total Budget (USD)
+                Total Budget (ETH)
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">
@@ -294,7 +294,7 @@ export default function CampaignCreator() {
                   type="number"
                   value={form.budget}
                   onChange={(e) =>
-                    handleFormChange("budget", Number(e.target.value))
+                    handleFormChange("budget", parseFloat(e.target.value))
                   }
                   className="w-full pl-8 pr-3 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
                   placeholder="5000"
