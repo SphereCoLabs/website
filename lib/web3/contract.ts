@@ -1,7 +1,9 @@
 import contractData from "@/contract.json";
 
-// Contract Address - Update this based on your deployment network
-export const CONTRACT_ADDRESS = contractData.address as `0x${string}`;
+// Contract Address - Prefer environment variable for easy network switching
+export const CONTRACT_ADDRESS =
+  (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) ||
+  (contractData.address as `0x${string}`);
 
 // Contract ABI
 export const CONTRACT_ABI = contractData.abi;

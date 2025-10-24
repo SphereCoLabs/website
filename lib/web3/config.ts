@@ -8,6 +8,12 @@ export const chains = [sepolia, polygonAmoy, base, baseSepolia] as const;
 // WalletConnect Project ID (get from https://cloud.walletconnect.com/)
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "";
 
+// RPC URLs from environment variables
+const baseRpcUrl =
+  process.env.NEXT_PUBLIC_BASE_RPC_URL || "https://mainnet.base.org";
+const baseSepoliaRpcUrl =
+  process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org";
+
 export const config = createConfig({
   chains: [sepolia, polygonAmoy, base, baseSepolia],
   connectors: [
@@ -26,8 +32,8 @@ export const config = createConfig({
   transports: {
     [sepolia.id]: http(),
     [polygonAmoy.id]: http(),
-    [base.id]: http(),
-    [baseSepolia.id]: http(),
+    [base.id]: http(baseRpcUrl),
+    [baseSepolia.id]: http(baseSepoliaRpcUrl),
   },
 });
 
