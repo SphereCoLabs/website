@@ -153,7 +153,7 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
-        
+
         {/* Documentation Card - Full Width Featured Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

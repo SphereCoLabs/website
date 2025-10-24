@@ -1,31 +1,76 @@
 import {
-  useContractRead,
-  useContractWrite,
-  useTransactionReceipt,
-} from "./useContract";
+  useReadContract,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+} from "wagmi";
+import { getContractConfig } from "../contract";
 import type { Campaign, CreateCampaignParams } from "../types";
 import { parseEther } from "viem";
 import { useEffect, useState } from "react";
+import { baseSepolia } from "wagmi/chains";
 
 /**
  * Hook to get a campaign by ID
  */
 export function useGetCampaign(campaignId: bigint) {
-  return useContractRead<Campaign>("getCampaign", [campaignId]);
+  try {
+    const contractConfig = getContractConfig();
+    return useReadContract({
+      ...contractConfig,
+      functionName: "getCampaign",
+      args: [campaignId],
+      chainId: baseSepolia.id,
+    }) as { data: Campaign; isLoading: boolean; error: Error | null };
+  } catch (error) {
+    console.error("Error in useGetCampaign:", error);
+    return {
+      data: undefined,
+      isLoading: false,
+      error: error instanceof Error ? error : new Error("Unknown error"),
+    } as any;
+  }
 }
 
 /**
  * Hook to get all campaign IDs
  */
 export function useGetAllCampaignIds() {
-  return useContractRead<bigint[]>("getAllCampaignIds");
+  try {
+    const contractConfig = getContractConfig();
+    return useReadContract({
+      ...contractConfig,
+      functionName: "getAllCampaignIds",
+      chainId: baseSepolia.id,
+    }) as { data: bigint[]; isLoading: boolean; error: Error | null };
+  } catch (error) {
+    console.error("Error in useGetAllCampaignIds:", error);
+    return {
+      data: undefined,
+      isLoading: false,
+      error: error instanceof Error ? error : new Error("Unknown error"),
+    } as any;
+  }
 }
 
 /**
  * Hook to get campaign count
  */
 export function useGetCampaignCount() {
-  return useContractRead<bigint>("getCampaignCount");
+  try {
+    const contractConfig = getContractConfig();
+    return useReadContract({
+      ...contractConfig,
+      functionName: "getCampaignCount",
+      chainId: baseSepolia.id,
+    }) as { data: bigint; isLoading: boolean; error: Error | null };
+  } catch (error) {
+    console.error("Error in useGetCampaignCount:", error);
+    return {
+      data: undefined,
+      isLoading: false,
+      error: error instanceof Error ? error : new Error("Unknown error"),
+    } as any;
+  }
 }
 
 /**
@@ -65,13 +110,17 @@ export function useGetAllCampaigns() {
  * Hook to create a campaign
  */
 export function useCreateCampaign() {
-  const { write, hash, isPending, error } = useContractWrite();
-  const { isLoading: isConfirming, isSuccess } = useTransactionReceipt(hash);
+  const contractConfig = getContractConfig();
+  const { writeContract, data: hash, isPending, error } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const createCampaign = (params: CreateCampaignParams) => {
-    write(
-      "createCampaign",
-      [
+    writeContract({
+      ...contractConfig,
+      functionName: "createCampaign",
+      args: [
         params.title,
         params.description,
         params.brief,
@@ -83,8 +132,9 @@ export function useCreateCampaign() {
         params.targetAudience,
         params.guideline,
       ],
-      params.value // Payment value
-    );
+      value: params.value, // Payment value
+      chainId: baseSepolia.id,
+    });
   };
 
   return {
@@ -101,11 +151,19 @@ export function useCreateCampaign() {
  * Hook to cancel a campaign
  */
 export function useCancelCampaign() {
-  const { write, hash, isPending, error } = useContractWrite();
-  const { isLoading: isConfirming, isSuccess } = useTransactionReceipt(hash);
+  const contractConfig = getContractConfig();
+  const { writeContract, data: hash, isPending, error } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const cancelCampaign = (campaignId: bigint) => {
-    write("cancelCampaign", [campaignId]);
+    writeContract({
+      ...contractConfig,
+      functionName: "cancelCampaign",
+      args: [campaignId],
+      chainId: baseSepolia.id,
+    });
   };
 
   return {
@@ -122,11 +180,19 @@ export function useCancelCampaign() {
  * Hook to complete a campaign
  */
 export function useCompleteCampaign() {
-  const { write, hash, isPending, error } = useContractWrite();
-  const { isLoading: isConfirming, isSuccess } = useTransactionReceipt(hash);
+  const contractConfig = getContractConfig();
+  const { writeContract, data: hash, isPending, error } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const completeCampaign = (campaignId: bigint) => {
-    write("completeCampaign", [campaignId]);
+    writeContract({
+      ...contractConfig,
+      functionName: "completeCampaign",
+      args: [campaignId],
+      chainId: baseSepolia.id,
+    });
   };
 
   return {
@@ -143,11 +209,19 @@ export function useCompleteCampaign() {
  * Hook to withdraw campaign funds
  */
 export function useWithdrawCampaign() {
-  const { write, hash, isPending, error } = useContractWrite();
-  const { isLoading: isConfirming, isSuccess } = useTransactionReceipt(hash);
+  const contractConfig = getContractConfig();
+  const { writeContract, data: hash, isPending, error } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const withdrawCampaign = (campaignId: bigint) => {
-    write("withdrawCampaign", [campaignId]);
+    writeContract({
+      ...contractConfig,
+      functionName: "withdrawCampaign",
+      args: [campaignId],
+      chainId: baseSepolia.id,
+    });
   };
 
   return {
@@ -164,11 +238,19 @@ export function useWithdrawCampaign() {
  * Hook to refund campaign
  */
 export function useRefundCampaign() {
-  const { write, hash, isPending, error } = useContractWrite();
-  const { isLoading: isConfirming, isSuccess } = useTransactionReceipt(hash);
+  const contractConfig = getContractConfig();
+  const { writeContract, data: hash, isPending, error } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const refundCampaign = (campaignId: bigint) => {
-    write("refundCampaign", [campaignId]);
+    writeContract({
+      ...contractConfig,
+      functionName: "refundCampaign",
+      args: [campaignId],
+      chainId: baseSepolia.id,
+    });
   };
 
   return {

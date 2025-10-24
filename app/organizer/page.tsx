@@ -21,10 +21,7 @@ import {
   RefreshCcw,
   Loader2,
 } from "lucide-react";
-import {
-  useGetAllCampaignIds,
-  useGetCampaign,
-} from "@/lib/web3/hooks/useCampaign";
+import { useGetAllCampaigns } from "@/lib/web3/hooks/useCampaign";
 import { CampaignStatus } from "@/lib/web3/types";
 import { useAccount } from "wagmi";
 import { NetworkGuard } from "@/components/NetworkGuard";
@@ -36,15 +33,8 @@ export default function OrganizerDashboard() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const { address } = useAccount();
-  const { data: idsData, isLoading: idsLoading } = useGetAllCampaignIds();
-  const ids: bigint[] = Array.isArray(idsData) ? (idsData as bigint[]) : [];
-
-  // Fetch all campaign data
-  const campaignDatas = ids.map((id) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { data } = useGetCampaign(id);
-    return { id, data };
-  });
+  const { campaigns: campaignDatas, isLoading: idsLoading } =
+    useGetAllCampaigns();
 
   // Map campaign status to tab status
   const mapStatusToTab = (status?: CampaignStatus) => {
