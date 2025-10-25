@@ -4,7 +4,14 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { useGetCampaign } from "@/lib/web3/hooks/useCampaign";
 import { CampaignStatus } from "@/lib/web3/types";
-import { Calendar, Users, Coins, Eye, MoreVertical, BarChart3 } from "lucide-react";
+import {
+  Calendar,
+  Users,
+  Coins,
+  Eye,
+  MoreVertical,
+  BarChart3,
+} from "lucide-react";
 
 interface CampaignItemProps {
   campaignId: bigint;
@@ -42,31 +49,45 @@ export default function CampaignItem({
     const campaignIdNum = Number(campaignId);
     const mockKols = Math.max(1, (campaignIdNum % 5) + 1); // 1-5 KOLs based on ID
     const mockApplicants = Math.max(3, (campaignIdNum % 15) + 5); // 5-19 applicants based on ID
-    
+
     return {
       id: String(campaignId),
       title: campaignData.title || `Campaign ${String(campaignId)}`,
       status: mapStatusToTab(campaignData.status),
-      kols: campaignData.status === CampaignStatus.Active ? mockKols : 
-            campaignData.status === CampaignStatus.Completed ? mockKols : 0,
-      applicants: campaignData.status === CampaignStatus.Published || 
-                  campaignData.status === CampaignStatus.Active || 
-                  campaignData.status === CampaignStatus.Completed ? mockApplicants : 0,
+      kols:
+        campaignData.status === CampaignStatus.Active
+          ? mockKols
+          : campaignData.status === CampaignStatus.Completed
+          ? mockKols
+          : 0,
+      applicants:
+        campaignData.status === CampaignStatus.Published ||
+        campaignData.status === CampaignStatus.Active ||
+        campaignData.status === CampaignStatus.Completed
+          ? mockApplicants
+          : 0,
       budget: campaignData.reward
         ? `${(Number(campaignData.reward) / 1e18).toFixed(4)} ETH`
         : "0 ETH",
       deadline: campaignData.endDate
-        ? new Date(Number(campaignData.endDate) * 1000)
-            .toLocaleDateString("en-US", {
+        ? new Date(Number(campaignData.endDate) * 1000).toLocaleDateString(
+            "en-US",
+            {
               month: "short",
               day: "numeric",
-              year: "numeric"
-            })
+              year: "numeric",
+            }
+          )
         : "No deadline",
-      engagement: campaignData.status === CampaignStatus.Active || campaignData.status === CampaignStatus.Completed
-        ? `${Math.max(10, (campaignIdNum % 50) + 20)}%` 
-        : "0%", // Mock engagement rate
-      description: campaignData.description || campaignData.brief || "No description available for this campaign",
+      engagement:
+        campaignData.status === CampaignStatus.Active ||
+        campaignData.status === CampaignStatus.Completed
+          ? `${Math.max(10, (campaignIdNum % 50) + 20)}%`
+          : "0%", // Mock engagement rate
+      description:
+        campaignData.description ||
+        campaignData.brief ||
+        "No description available for this campaign",
       brief: campaignData.brief || campaignData.description || "",
       rawData: campaignData,
     };
@@ -138,9 +159,12 @@ export default function CampaignItem({
             </span>
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              {processedCampaign.rawData?.targetPlatform && processedCampaign.rawData.targetPlatform.length > 0
-                ? ['Instagram', 'TikTok', 'YouTube', 'Twitter', 'Facebook'][processedCampaign.rawData.targetPlatform[0]] || 'Social Media'
-                : 'Social Media'}
+              {processedCampaign.rawData?.targetPlatform &&
+              processedCampaign.rawData.targetPlatform.length > 0
+                ? ["Instagram", "TikTok", "YouTube", "Twitter", "Facebook"][
+                    processedCampaign.rawData.targetPlatform[0]
+                  ] || "Social Media"
+                : "Social Media"}
             </span>
           </div>
         </div>
@@ -212,7 +236,7 @@ export default function CampaignItem({
       </div>
 
       <div className="flex gap-2">
-        <Link 
+        <Link
           href={`/organizer/campaign/${processedCampaign.id}`}
           className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
         >
@@ -222,7 +246,7 @@ export default function CampaignItem({
           href={`/organizer/review/${processedCampaign.id}`}
           className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors text-center"
         >
-          {processedCampaign.status === 'done' ? 'Review' : 'Manage'}
+          {processedCampaign.status === "done" ? "Review" : "Manage"}
         </Link>
       </div>
     </div>
