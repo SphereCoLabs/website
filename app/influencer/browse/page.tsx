@@ -111,9 +111,18 @@ function CampaignCard({
             <span className="text-gray-600">Platform</span>
             <span className="font-semibold text-gray-900 truncate">
               {data?.targetPlatform && data.targetPlatform.length > 0
-                ? data.targetPlatform.map((p: number) => 
-                    ['Instagram', 'TikTok', 'YouTube', 'Twitter', 'Facebook'][p] || `Platform ${p}`
-                  ).join(", ")
+                ? data.targetPlatform
+                    .map(
+                      (p: number) =>
+                        [
+                          "Instagram",
+                          "TikTok",
+                          "YouTube",
+                          "Twitter",
+                          "Facebook",
+                        ][p] || `Platform ${p}`
+                    )
+                    .join(", ")
                 : "Not specified"}
             </span>
           </div>
@@ -121,9 +130,13 @@ function CampaignCard({
             <span className="text-gray-600">Content Type</span>
             <span className="font-semibold text-gray-900 truncate">
               {data?.contentTypes && data.contentTypes.length > 0
-                ? data.contentTypes.map((c: number) => 
-                    ['Post', 'Story', 'Reel', 'Video', 'Article'][c] || `Type ${c}`
-                  ).join(", ")
+                ? data.contentTypes
+                    .map(
+                      (c: number) =>
+                        ["Post", "Story", "Reel", "Video", "Article"][c] ||
+                        `Type ${c}`
+                    )
+                    .join(", ")
                 : "Not specified"}
             </span>
           </div>
@@ -240,7 +253,9 @@ export default function InfluencerBrowsePage() {
               <div className="relative">
                 <select
                   value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value as typeof filterStatus)}
+                  onChange={(e) =>
+                    setFilterStatus(e.target.value as typeof filterStatus)
+                  }
                   className="appearance-none px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pr-8"
                 >
                   <option value="all">All Status</option>

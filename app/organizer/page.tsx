@@ -322,8 +322,6 @@ export default function OrganizerDashboard() {
               )}
             </div>
           </motion.div>
-
-
         </div>
       </div>
     </NetworkGuard>
