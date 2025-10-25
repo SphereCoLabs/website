@@ -61,8 +61,8 @@ export interface Campaign {
   goal: string;
   startDate: bigint;
   endDate: bigint;
-  targetPlatform: CampaignPlatform[];
-  contentTypes: CampaignContentType[];
+  targetPlatform: CampaignPlatform[]; // Smart contract returns array
+  contentTypes: CampaignContentType[]; // Smart contract returns array
   targetAudience: string;
   guideline: string;
   reward: bigint;
@@ -101,8 +101,8 @@ export interface CreateCampaignParams {
   goal: string;
   startDate: bigint;
   endDate: bigint;
-  targetPlatform: CampaignPlatform;
-  contentTypes: CampaignContentType;
+  targetPlatform: CampaignPlatform; // Smart contract currently accepts single value
+  contentTypes: CampaignContentType; // Smart contract currently accepts single value
   targetAudience: string;
   guideline: string;
   value: bigint; // Payment amount in wei

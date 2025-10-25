@@ -11,7 +11,6 @@ import {
   Sparkles,
   Calendar,
   Users,
-  DollarSign,
   MoreVertical,
   Eye,
   BarChart3,
@@ -25,6 +24,7 @@ import { useGetAllCampaigns } from "@/lib/web3/hooks/useCampaign";
 import { CampaignStatus } from "@/lib/web3/types";
 import { useAccount } from "wagmi";
 import { NetworkGuard } from "@/components/NetworkGuard";
+import CampaignItem from "@/components/campaign/CampaignItem";
 
 export default function OrganizerDashboard() {
   const [activeTab, setActiveTab] = useState<"pending" | "running" | "done">(
@@ -36,57 +36,16 @@ export default function OrganizerDashboard() {
   const { campaigns: campaignDatas, isLoading: idsLoading } =
     useGetAllCampaigns();
 
-  // Map campaign status to tab status
-  const mapStatusToTab = (status?: CampaignStatus) => {
-    if (!status && status !== 0) return "pending";
-    switch (status) {
-      case CampaignStatus.Draft:
-      case CampaignStatus.Published:
-        return "pending";
-      case CampaignStatus.Active:
-        return "running";
-      case CampaignStatus.Completed:
-        return "done";
-      case CampaignStatus.Cancelled:
-        return "done";
-      default:
-        return "pending";
-    }
-  };
-
-  // Format campaigns with proper typing
-  const campaigns = useMemo(() => {
-    return campaignDatas.map(({ id, data }) => ({
-      id: String(id),
-      title: data?.title || `Campaign ${String(id)}`,
-      status: mapStatusToTab(data?.status),
-      kols: 0, // Would need additional contract calls to get this
-      applicants: 0, // Would need additional contract calls to get this
-      budget: data?.reward
-        ? `$${(Number(data.reward) / 1e18).toFixed(2)}`
-        : "$0",
-      deadline: data?.endDate
-        ? new Date(Number(data.endDate) * 1000).toISOString().slice(0, 10)
-        : "-",
-      engagement: "0", // Would need to track this separately
-      description: data?.description || "",
-      brief: data?.brief || "",
-      kol_list: [], // Would need additional contract calls to get this
-      rawData: data,
-    }));
-  }, [campaignDatas]);
-
+  // Simple stats based on campaign count
   const stats = useMemo(() => {
-    const totalCampaigns = campaigns.length;
-    const ongoing = campaigns.filter((c) => c.status === "running").length;
-    const completed = campaigns.filter((c) => c.status === "done").length;
+    const totalCampaigns = campaignDatas.length;
     return {
       totalCampaigns,
-      ongoing,
-      completed,
+      ongoing: 0, // Will be calculated by individual CampaignItem components
+      completed: 0, // Will be calculated by individual CampaignItem components
       aiSuggestions: 0, // Placeholder
     };
-  }, [campaigns]);
+  }, [campaignDatas]);
 
   const statCards = [
     {
@@ -123,22 +82,12 @@ export default function OrganizerDashboard() {
     },
   ];
 
-  const getStatusBadge = (status: string) => {
-    const badges = {
-      pending: "bg-yellow-100 text-yellow-700",
-      running: "bg-green-100 text-green-700",
-      done: "bg-gray-100 text-gray-700",
-    };
-    return badges[status as keyof typeof badges] || badges.pending;
-  };
-
-  // Filter campaigns by active tab
-  const filteredCampaigns = campaigns.filter(
-    (campaign) => campaign.status === activeTab
-  );
+  // Status filter function for CampaignItem components
+  const statusFilter = (status: string) => status === activeTab;
 
   const getTabCount = (status: string) => {
-    return campaigns.filter((c) => c.status === status).length;
+    // For now return 0, will be dynamically calculated by individual components
+    return 0;
   };
 
   return (
@@ -328,7 +277,7 @@ export default function OrganizerDashboard() {
                     Loading campaigns from Base Sepolia...
                   </p>
                 </div>
-              ) : filteredCampaigns.length === 0 ? (
+              ) : campaignDatas.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     {activeTab === "pending" && (
@@ -363,154 +312,18 @@ export default function OrganizerDashboard() {
                   )}
                 </div>
               ) : (
-                filteredCampaigns.map((campaign) => (
-                  <div
-                    key={campaign.id}
-                    className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-lg font-bold text-gray-900">
-                            {campaign.title}
-                          </h3>
-                          <span
-                            className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadge(
-                              campaign.status
-                            )}`}
-                          >
-                            {campaign.status.charAt(0).toUpperCase() +
-                              campaign.status.slice(1)}
-                          </span>
-                        </div>
-                      </div>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <MoreVertical className="w-5 h-5 text-gray-500" />
-                      </button>
-                    </div>
-
-                    {/* Campaign Stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                      <div className="flex items-center gap-2">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                          <Users className="w-4 h-4 text-blue-600" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-bold text-gray-900">
-                            {campaign.kols} / {campaign.applicants}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            Selected / Applied
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="p-2 bg-green-50 rounded-lg">
-                          <DollarSign className="w-4 h-4 text-green-600" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-bold text-gray-900">
-                            {campaign.budget}
-                          </div>
-                          <div className="text-xs text-gray-500">Budget</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="p-2 bg-purple-50 rounded-lg">
-                          <TrendingUp className="w-4 h-4 text-purple-600" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-bold text-gray-900">
-                            {campaign.engagement}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            Engagement
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="p-2 bg-orange-50 rounded-lg">
-                          <Calendar className="w-4 h-4 text-orange-600" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-bold text-gray-900">
-                            {new Date(campaign.deadline).toLocaleDateString(
-                              "en-US",
-                              { month: "short", day: "numeric" }
-                            )}
-                          </div>
-                          <div className="text-xs text-gray-500">Deadline</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Campaign Details */}
-                    {campaign.brief && (
-                      <div className="mb-4 p-4 bg-gray-50 rounded-xl">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-2">
-                          Campaign Brief
-                        </h4>
-                        <p className="text-sm text-gray-600 line-clamp-2">
-                          {campaign.brief}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Actions - Different based on status */}
-                    <div className="flex gap-3">
-                      {activeTab === "pending" && (
-                        <>
-                          <Link
-                            href={`/organizer/campaign/${campaign.id}`}
-                            className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all text-sm font-medium text-center flex items-center justify-center gap-2"
-                          >
-                            <Sparkles className="w-4 h-4" />
-                            AI Review Proposals ({campaign.applicants})
-                          </Link>
-                          <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-                            Edit
-                          </button>
-                        </>
-                      )}
-
-                      {activeTab === "running" && (
-                        <>
-                          <Link
-                            href={`/organizer/campaign/${campaign.id}`}
-                            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all text-sm font-medium text-center flex items-center justify-center gap-2"
-                          >
-                            <Eye className="w-4 h-4" />
-                            View Campaign Details
-                          </Link>
-                          <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-                            Manage
-                          </button>
-                        </>
-                      )}
-
-                      {activeTab === "done" && (
-                        <>
-                          <Link
-                            href={`/organizer/review/${campaign.id}`}
-                            className="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all text-sm font-medium text-center flex items-center justify-center gap-2"
-                          >
-                            <BarChart3 className="w-4 h-4" />
-                            Review Analytics & Results
-                          </Link>
-                          <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-                            Report
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                campaignDatas.map(({ id }: { id: bigint }) => (
+                  <CampaignItem
+                    key={id.toString()}
+                    campaignId={id}
+                    onStatusFilter={statusFilter}
+                  />
                 ))
               )}
             </div>
           </motion.div>
+
+
         </div>
       </div>
     </NetworkGuard>

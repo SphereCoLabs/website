@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { UserRole } from "@/lib/web3/types";
 import { useGetUser, useRegisterUser } from "@/lib/web3/hooks/useUser";
 import { Loader2, UserPlus, CheckCircle, AlertCircle } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface UserRegistrationProps {
   requiredRole: UserRole;
@@ -18,19 +19,54 @@ export function UserRegistration({
   children,
 }: UserRegistrationProps) {
   const { address, isConnected } = useAccount();
-  const { data: user, isLoading: isLoadingUser } = useGetUser();
+  const { data: user, isLoading: isLoadingUser, refetch } = useGetUser();
   const { registerUser, isPending, isConfirming, isSuccess, error } =
     useRegisterUser();
 
+  const queryClient = useQueryClient();
   const [showRegistration, setShowRegistration] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     summary: "",
   });
+  const [registrationComplete, setRegistrationComplete] = useState(false);
+  const [refetchAttempts, setRefetchAttempts] = useState(0);
 
   // Check if user is registered and has correct role
   const isRegistered = user && user.name && user.name.trim() !== "";
-  const hasCorrectRole = isRegistered && user.role === requiredRole;
+  const hasCorrectRole =
+    isRegistered && Number(user.role) === Number(requiredRole);
+
+  // Debug logging (remove in production)
+  useEffect(() => {
+    console.log("UserRegistration Debug:", {
+      user,
+      isRegistered,
+      hasCorrectRole,
+      requiredRole,
+      userRole: user?.role,
+      userRoleNumber: user?.role ? Number(user.role) : null,
+      requiredRoleNumber: Number(requiredRole),
+      roleMatch: user?.role
+        ? Number(user.role) === Number(requiredRole)
+        : false,
+      registrationComplete,
+      refetchAttempts,
+      isSuccess,
+      isPending,
+      isConfirming,
+    });
+  }, [
+    user,
+    isRegistered,
+    hasCorrectRole,
+    requiredRole,
+    registrationComplete,
+    refetchAttempts,
+    isSuccess,
+    isPending,
+    isConfirming,
+  ]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,13 +87,80 @@ export function UserRegistration({
     }
   };
 
-  // Wait for registration to complete and reload
-  if (isSuccess && !hasCorrectRole) {
-    setTimeout(() => {
-      window.location.reload();
-      if (onRegistered) onRegistered();
-    }, 2000);
-  }
+  // Handle successful registration
+  useEffect(() => {
+    if (isSuccess && !registrationComplete) {
+      setRegistrationComplete(true);
+      setRefetchAttempts(0);
+
+      // Invalidate all contract read queries to ensure fresh data
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "readContract" ||
+          (Array.isArray(query.queryKey) && query.queryKey.includes("getUser")),
+      });
+
+      // Refetch user data after a short delay to ensure blockchain is updated
+      const attemptRefetch = async (attemptCount = 0) => {
+        if (attemptCount >= 3) {
+          // If after 3 attempts still no success, reload the page
+          console.log("Max refetch attempts reached, reloading page...");
+          window.location.reload();
+          return;
+        }
+
+        setTimeout(async () => {
+          setRefetchAttempts(attemptCount + 1);
+          const result = await refetch();
+
+          // Check if the user now has the correct role
+          if (
+            result.data &&
+            Number(result.data.role) === Number(requiredRole) &&
+            result.data.name.trim() !== ""
+          ) {
+            console.log("Registration successful, user has correct role");
+            if (onRegistered) onRegistered();
+          } else {
+            console.log(
+              "Refetch attempt",
+              attemptCount + 1,
+              "user still not ready:",
+              result.data
+            );
+            // Try again
+            attemptRefetch(attemptCount + 1);
+          }
+        }, 2000 + attemptCount * 1000); // Increase delay with each attempt
+      };
+
+      attemptRefetch();
+    }
+  }, [
+    isSuccess,
+    registrationComplete,
+    queryClient,
+    refetch,
+    onRegistered,
+    requiredRole,
+  ]);
+
+  // Reset registration state when user changes
+  useEffect(() => {
+    if (user && hasCorrectRole) {
+      setRegistrationComplete(false);
+      setRefetchAttempts(0);
+    }
+  }, [user, hasCorrectRole]);
+
+  // Reset state when wallet disconnects or changes
+  useEffect(() => {
+    if (!isConnected || !address) {
+      setRegistrationComplete(false);
+      setRefetchAttempts(0);
+      setFormData({ name: "", summary: "" });
+    }
+  }, [isConnected, address]);
 
   if (!isConnected) {
     return (
@@ -77,18 +180,31 @@ export function UserRegistration({
     );
   }
 
-  if (isLoadingUser) {
+  if (isLoadingUser || (registrationComplete && !hasCorrectRole && !error)) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Checking registration status...</p>
+          <p className="text-gray-600">
+            {registrationComplete
+              ? `Loading your registration data${
+                  refetchAttempts > 0
+                    ? ` (attempt ${refetchAttempts}/3)`
+                    : "..."
+                }`
+              : "Checking registration status..."}
+          </p>
+          {registrationComplete && refetchAttempts > 0 && (
+            <p className="text-xs text-gray-500 mt-2">
+              Waiting for blockchain confirmation...
+            </p>
+          )}
         </div>
       </div>
     );
   }
 
-  if (isSuccess && !hasCorrectRole) {
+  if (registrationComplete && !hasCorrectRole) {
     return (
       <div className="min-h-[400px] flex items-center justify-center p-6">
         <div className="max-w-md w-full bg-green-50 border-2 border-green-200 rounded-2xl p-8 text-center">
@@ -99,7 +215,7 @@ export function UserRegistration({
             Registration Successful!
           </h2>
           <p className="text-gray-600 mb-4">
-            Your account has been registered. Refreshing...
+            Your account has been registered. Loading your data...
           </p>
           <Loader2 className="w-8 h-8 text-green-600 animate-spin mx-auto" />
         </div>

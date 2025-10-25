@@ -61,6 +61,7 @@ export function useContractRead<T = any>(functionName: string, args?: any[]) {
       data: undefined as T,
       isLoading: false,
       error: new Error("Contract configuration is invalid"),
+      refetch: () => Promise.resolve({ data: undefined }),
     } as any;
   }
 
